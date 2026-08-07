@@ -48,7 +48,8 @@ export const useAuthStore = create<AuthState>()(
       setAuth: (user, accessToken) =>
         set({ user, accessToken, isAuthenticated: true, isLoading: false }),
 
-      setAccessToken: (accessToken) => set({ accessToken }),
+      setAccessToken: (accessToken) =>
+        set({ accessToken, isAuthenticated: Boolean(accessToken) }),
 
       setUser: (user) => set({ user }),
 
@@ -73,10 +74,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "rihla-auth",
+      // Persist only non-sensitive user profile. The access token stays
+      // in-memory and is re-acquired via the HttpOnly refresh cookie.
       partialize: (state) => ({
         user: state.user,
-        accessToken: state.accessToken,
-        isAuthenticated: state.isAuthenticated,
       }),
     }
   )

@@ -27,13 +27,26 @@ const refreshAccessToken = (): Promise<string | null> => {
   return refreshPromise;
 };
 
+export { refreshAccessToken };
+
+export const restoreSession = async (): Promise<boolean> => {
+  const store = useAuthStore.getState();
+  if (store.accessToken) return true;
+  const newToken = await refreshAccessToken();
+  if (newToken) {
+    store.setAccessToken(newToken);
+    return true;
+  }
+  return false;
+};
+
 type RetriableRequest = InternalAxiosRequestConfig & { _retried?: boolean };
 
-const createClient = (baseURL: string, opts?: { withRefresh?: boolean }): AxiosInstance => {
+const createClient = (baseURL: string, opts?: { withRefresh?: boolean; withCredentials?: boolean }): AxiosInstance => {
   const client = axios.create({
     baseURL,
     timeout: 30000,
-    withCredentials: true,
+    withCredentials: opts?.withCredentials ?? true,
     headers: { "Content-Type": "application/json" },
   });
 
@@ -71,5 +84,6 @@ const createClient = (baseURL: string, opts?: { withRefresh?: boolean }): AxiosI
 export const coreClient = createClient(coreBaseURL, { withRefresh: true });
 
 export const geoClient = createClient(
-  process.env.NEXT_PUBLIC_GEO_API_URL || "http://localhost:8000/api/v1"
+  process.env.NEXT_PUBLIC_GEO_API_URL || "http://localhost:8000/api/v1",
+  { withCredentials: false }
 );

@@ -1,31 +1,36 @@
 # rihla-client — Handoff
 
 > Read relevant section only. Appends 3–6 lines. Prune Changelog > 25.
-> Last updated: 2026-08-07
+> Last updated: 2026-08-08
 
 ## Current status
-- Dev server DOWN (not started). `node_modules` + `.next/` present (been built before).
-- `.env.local` exists; `.env.example` has `NEXT_PUBLIC_CORE_API_URL=http://localhost:3000/api`, `NEXT_PUBLIC_GEO_API_URL=http://localhost:8000/api/v1`.
+- Client running on **3100** (`next start`, setsid) with built output; `.env.local` points Core 3000 / Geo 8000.
+- All 4 backend services up (Core 3000, Risk 3001 auto, ai 3003, Geo 8000). Repos all merged + pushed.
+- Chat/voice/identify response types and message objects now carry `usage` / `providerCalls` / `providerAttempts` telemetry (captured from ai-service, rendered on assistant bubbles).
 
 ## In-progress / next
-- (Resume point) Font/ambience pass done. Remaining pre-existing lint errors only: `payment-result/page.tsx` (setState-in-effect), `wallet/package-grid.tsx` (immutability).
+- Notifications inbox + context alerts + usage telemetry shipped; push pending if uncommitted. Next: verify SSE stream live-delivery in a real browser (needs a logged-in session + location), and consider an admin notifications UI (backend supports `/api/admin/notifications/*`, client has none).
 
 ## Architecture notes
 - Full API layer in `src/lib/api/` (coreClient w/ 401 refresh + queue; geoClient no refresh).
 - Chat supports SSE (`streamMessage`), voice, identify (multipart + long timeout).
 - i18n via `[locale]` route segment + next-intl; middleware routes locale.
-- Pages: auth, chat, explore(map), currency, safety, quests(+detail), wallet, profile, onboarding, tickets, payment-result; admin: users, payments, ai-usage, audit-logs, geo, system-health.
+- Pages: auth, chat, explore(map), currency, safety, quests(+detail), wallet, profile, onboarding, tickets, payment-result; admin removed (dedicated teammate app).
 
 ## Key files
 - `src/lib/api/client.ts` (axios + refresh) · `src/lib/api/chat.ts`
-- `src/lib/stores/auth-store.ts` (token/user) · `src/components/layout/{navbar,auth-guard,admin-guard}.tsx`
+- `src/lib/api/notifications.ts` · `src/lib/stores/notification-store.ts` (SSE + inbox)
+- `src/components/layout/{top-bar,notification-bell}.tsx` · `src/components/chat/context-alert.tsx`
+- `src/app/[locale]/notifications/page.tsx` · `src/components/chat/chat-message.tsx` (telemetry)
 
 ## Gotchas
-- Port 3000 is Core-Server → run client on 3050.
+- Port 3000 is Core-Server → run client on 3100 (was 3050) for this session.
 - First compile slow (~60-75s) on this filesystem.
-- Editing AGENTS.md must stay current — the only running app.
+- `POST /context-notifications/location` triggers Core→ai-service `/analyze` path (context-engine); ai-service route is mounted at `/analyze` (no `/context` prefix) — kept as-is.
+- Notifications SSE uses fetch (Bearer token); bell connects only when authenticated.
 
 ## Changelog
+- 2026-08-08: Wired the new backend context-notification subsystem into the client. Added `src/lib/api/notifications.ts` (inbox/unread/read-all/delete/reports/preferences/SSE via fetch) + `src/lib/stores/notification-store.ts` (zustand, live stream apply, location reporting). New `/notifications` page (inbox + reports tabs, priority styling, mark-all-read, delete), `NotificationBell` with unread badge in TopBar (auth-gated, 60s poll), `ContextAlert` in chat page that geolocates → reports location → surfaces CRITICAL/HIGH alerts + navigates to inbox. Added usage telemetry types (`UsageResult`, `ProviderCall`, `ProviderAttempt`) to chat API; stream/voice/identify now stash `usage`/`providerCalls`/`providerAttempts` on assistant messages and `chat-message.tsx` renders calls/tokens/retries chips. i18n `notifications.*` en/ar. tsc + next build pass, page 200 on 3100.
 - 2026-08-07: Created `AGENTS.md` + `CONTEXT.md` (from package.json + api layer). Not started this session.
 - 2026-08-07: Sensitive-area feature: added `geoApi.getAreaNotice` + `AreaNotice` type, `use-area-notice` hook (refetchInterval 15s, enabled on coords), `SensitiveAreaNotice` component (self-geolocates via useEffect, dismissible banner, class-colored severity, mounted in `[locale]/layout.tsx`), i18n `guide.*` en/ar. Client build passes.
 - 2026-08-07: Massive design refactor (P1 foundation + P2 shell) started. Adopted Ahmed/Rihla-frontend visual language: rewrote `globals.css` tokens (limestone/basalt/nile/solar/faience/copper + safe/amber/red; old nile/sand/gold/terracotta aliases remapped so existing classes resolve), fonts via Google @import (Cormorant Garamond headings, Inter body, Cairo Arabic), copied `public/logo.png`. New `RihlaGlyph/RihlaLogoFull/Geom/PyramidSkyline` atoms (`src/components/shared/rihla-logo.tsx`). Built `AppShell` (dark collapsible sidebar, Rafiq emphasized faience), `TopBar` (animated gradient+pyramid+particles, location chip, avatar menu), `RafiqDrawer`+`RafiqLauncher` (slide-over chat reusing chat-store/ChatMessage/ChatInput), relabeled `MobileNav` (Rafiq central), new `/settings` route + i18n en/ar, restyled `AuthLayout` w/ logo. Layout now: TopBar > AppShell(sidebar) > main > Footer > MobileNav > overlays. Build passes, running on 3050.

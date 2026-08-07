@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowRight, MapPin, ShieldCheck, Bot } from "lucide-react";
+import { PyramidSkyline } from "@/components/shared/rihla-logo";
+import { RihlaButton } from "@/components/ui/rihla-ui";
 
 export default function HomePage() {
   const t = useTranslations("landing");
@@ -54,28 +56,29 @@ export default function HomePage() {
     <div className="flex flex-col">
       {/* Hero */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-nile/90 via-nile/70 to-sand/30" />
-        <div className="absolute inset-0 bg-[url('/images/hero-bg.jpg')] bg-cover bg-center opacity-20" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(200,131,26,0.28),transparent_55%),linear-gradient(135deg,#141008_0%,#1e3a3b_55%,#0d1f20_100%)]" />
+        <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+          <PyramidSkyline size={640} op={0.4} color="#E8C57A" />
+        </div>
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 text-white">
+          <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 text-limestone">
             {t("heroTitle")}{" "}
-            <span className="text-gold">{c("appName")}</span>
+            <span className="text-solar">{c("appName")}</span>
           </h1>
-          <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-limestone/80 mb-10 max-w-2xl mx-auto">
             {t("heroSubtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/chat"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gold hover:bg-gold-dark text-white rounded-lg font-semibold transition-colors text-lg"
-            >
-              <Bot className="w-5 h-5" />
-              {t("startChatting")}
-              <ArrowRight className="w-5 h-5" />
+            <Link href="/chat">
+              <RihlaButton variant="primary" className="px-8 py-4 text-lg">
+                <Bot className="w-5 h-5" />
+                {t("startChatting")}
+                <ArrowRight className="w-5 h-5" />
+              </RihlaButton>
             </Link>
             <Link
               href="/explore"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/30 rounded-lg font-semibold transition-colors text-lg"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-limestone border border-limestone/30 rounded-[10px] bg-limestone/10 hover:bg-limestone/20 font-semibold transition-colors text-lg backdrop-blur"
             >
               <MapPin className="w-5 h-5" />
               {t("exploreSites")}
@@ -157,27 +160,26 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-r from-gold to-gold-dark">
+      <section className="py-20 bg-[radial-gradient(ellipse_at_center,rgba(200,131,26,0.35),transparent_70%)] bg-[#141008] border-t border-limestone/10">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-limestone mb-6">
             {t("ctaTitle")}
           </h2>
-          <p className="text-lg text-white/80 mb-10 max-w-xl mx-auto">
+          <p className="text-lg text-limestone/70 mb-10 max-w-xl mx-auto">
             {t("ctaDesc")}
           </p>
-          <Link
-            href="/chat"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-gold-dark rounded-lg font-semibold hover:bg-sand transition-colors text-lg"
-          >
-            <Bot className="w-5 h-5" />
-            {t("startChatting")}
-            <ArrowRight className="w-5 h-5" />
+          <Link href="/chat">
+            <RihlaButton variant="primary" className="px-8 py-4 text-lg">
+              <Bot className="w-5 h-5" />
+              {t("startChatting")}
+              <ArrowRight className="w-5 h-5" />
+            </RihlaButton>
           </Link>
         </div>
       </section>
 
       {/* Footer extra */}
-      <section className="py-8 bg-nile-dark text-center text-white/40 text-sm">
+      <section className="py-8 bg-[#0c1313] text-center text-limestone/40 text-sm">
         &copy; {new Date().getFullYear()} {c("appName")}. All rights reserved.
       </section>
     </div>

@@ -42,7 +42,7 @@ export function ChatMessage({
       <div
         className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${
           isUser
-            ? "bg-gold text-white"
+            ? "bg-[#2E9C93] text-white"
             : pConfig
             ? pConfig.bg + " " + pConfig.color
             : "bg-nile/10 dark:bg-nile-light/30 text-nile dark:text-sand"
@@ -61,7 +61,7 @@ export function ChatMessage({
         <div
           className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
             isUser
-              ? "bg-gold text-white rounded-tr-sm"
+              ? "bg-[#2E9C93] text-white rounded-tr-sm"
               : "bg-sand/50 dark:bg-nile-light/30 text-nile dark:text-sand rounded-tl-sm"
           } ${isStreaming ? "animate-pulse" : ""}`}
         >

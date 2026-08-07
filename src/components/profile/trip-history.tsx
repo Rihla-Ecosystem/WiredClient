@@ -35,8 +35,8 @@ export function TripHistory({ trips }: TripHistoryProps) {
           key={trip.id}
           className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-nile border border-sand/50 dark:border-nile-light/20"
         >
-          <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
-            <MapPin className="w-5 h-5 text-gold" />
+          <div className="w-10 h-10 rounded-lg bg-[#2E9C93]/10 flex items-center justify-center flex-shrink-0">
+            <MapPin className="w-5 h-5 text-[#2E9C93]" />
           </div>
           <div className="min-w-0 flex-1">
             <h4 className="font-medium text-nile dark:text-sand text-sm">

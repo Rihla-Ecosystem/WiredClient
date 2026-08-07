@@ -12,10 +12,17 @@ export function ProfileCard() {
   if (!user) return null;
 
   return (
-    <div className="bg-white dark:bg-nile rounded-2xl border border-sand/50 dark:border-nile-light/20 p-6 md:p-8">
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+    <div className="relative overflow-hidden rounded-2xl border border-sand/50 dark:border-nile-light/20 p-6 md:p-8 bg-white dark:bg-nile">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at top right, rgba(46,156,147,0.16), transparent 55%), radial-gradient(ellipse at bottom left, rgba(200,131,26,0.14), transparent 55%)",
+        }}
+      />
+      <div className="relative flex flex-col sm:flex-row items-center sm:items-start gap-6">
         {/* Avatar */}
-        <div className="w-24 h-24 rounded-full bg-gold/10 flex items-center justify-center text-3xl font-serif font-bold text-gold border-2 border-gold/30 flex-shrink-0">
+        <div className="w-24 h-24 rounded-full bg-[#2E9C93]/12 flex items-center justify-center text-3xl font-serif font-bold text-[#2E9C93] border-2 border-[#2E9C93]/30 flex-shrink-0">
           {user.displayName.charAt(0).toUpperCase()}
         </div>
 
@@ -45,12 +52,12 @@ export function ProfileCard() {
 
           <div className="flex items-center gap-4 mt-4 justify-center sm:justify-start">
             <div className="text-center">
-              <div className="text-2xl font-bold text-gold">{user.level}</div>
+              <div className="text-2xl font-bold text-[#C8831A]">{user.level}</div>
               <div className="text-xs text-muted-foreground">{t("level")}</div>
             </div>
             <div className="w-px h-10 bg-sand/50 dark:bg-nile-light/30" />
             <div className="text-center">
-              <div className="text-2xl font-bold text-gold">{user.xp}</div>
+              <div className="text-2xl font-bold text-[#C8831A]">{user.xp}</div>
               <div className="text-xs text-muted-foreground">XP</div>
             </div>
           </div>

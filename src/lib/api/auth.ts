@@ -44,4 +44,12 @@ export const authApi = {
     coreClient.get<
       { id: number; name: string; description?: string | null; iconUrl?: string | null }[]
     >(`/users/${userId}/badges`),
+
+  verifyEmail: (token: string) =>
+    coreClient.get<{ message: string }>("/auth/verify-email", {
+      params: { token },
+    }),
+
+  resendVerification: (email: string) =>
+    coreClient.post<{ message: string }>("/auth/resend-verification", { email }),
 };

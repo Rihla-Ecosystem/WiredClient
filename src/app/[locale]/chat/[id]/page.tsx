@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Menu } from "lucide-react";
+import { ArrowLeft, Menu } from "lucide-react";
+import Link from "next/link";
 
 import { AuthGuard } from "@/components/layout/auth-guard";
 import { ChatMessage } from "@/components/chat/chat-message";
@@ -11,20 +13,31 @@ import { ChatSidebar } from "@/components/chat/chat-sidebar";
 import { EmptyState } from "@/components/shared/empty-state";
 import { useChatStore } from "@/lib/stores/chat-store";
 
-export default function ChatPage() {
+export default function ChatDetailPage() {
   const t = useTranslations("chat");
+  const params = useParams<{ id: string }>();
+  const id = params.id;
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const messagesRef = useRef<HTMLDivElement>(null);
   const stickToBottomRef = useRef(true);
   const prevConvRef = useRef<string | null>(null);
-  const { conversations, messages, currentConversationId: activeConversationId, error: chatError, setError } = useChatStore();
+  const {
+    conversations,
+    messages,
+    currentConversationId,
+    setActiveConversation,
+    error: chatError,
+    setError,
+  } = useChatStore();
 
-  const activeConv = conversations.find(
-    (c) => c.id === activeConversationId
-  );
+  useEffect(() => {
+    if (id) setActiveConversation(id);
+  }, [id, setActiveConversation]);
+
+  const activeConv = conversations.find((c) => c.id === id);
   const activeMessages = useMemo(
-    () => (activeConversationId ? messages[activeConversationId] || [] : []),
-    [messages, activeConversationId]
+    () => (id ? messages[id] || [] : []),
+    [messages, id]
   );
 
   const handleScroll = () => {
@@ -37,12 +50,12 @@ export default function ChatPage() {
   useEffect(() => {
     const el = messagesRef.current;
     if (!el) return;
-    if (prevConvRef.current !== activeConversationId) {
-      prevConvRef.current = activeConversationId;
+    if (prevConvRef.current !== id) {
+      prevConvRef.current = id;
       stickToBottomRef.current = true;
     }
     if (stickToBottomRef.current) el.scrollTop = el.scrollHeight;
-  }, [activeMessages, activeConversationId]);
+  }, [activeMessages, id]);
 
   return (
     <AuthGuard>
@@ -74,13 +87,20 @@ export default function ChatPage() {
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2">
+            <Link
+              href="/chat"
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-nile dark:hover:text-sand transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">{t("title")}</span>
+            </Link>
+            <div className="flex items-center gap-2 flex-1 min-w-0">
               <span
-                className="w-2.5 h-2.5 rounded-full"
+                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                 style={{ background: "#2E9C93", boxShadow: "0 0 8px rgba(46,156,147,0.8)" }}
               />
-              <h1 className="text-lg font-serif font-bold text-nile dark:text-sand">
-                {t("title")}
+              <h1 className="text-lg font-serif font-bold text-nile dark:text-sand truncate">
+                {activeConv?.title || t("title")}
               </h1>
             </div>
           </div>
@@ -91,7 +111,7 @@ export default function ChatPage() {
             onScroll={handleScroll}
             className="flex-1 overflow-y-auto px-4 py-6 space-y-4"
           >
-            {!activeConv || activeMessages.length === 0 ? (
+            {activeMessages.length === 0 ? (
               <EmptyState
                 icon="MessageSquare"
                 title={t("noConversations")}

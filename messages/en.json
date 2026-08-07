@@ -74,7 +74,17 @@
     "resetPassword": "Reset Password",
     "checkEmail": "Check your email for the verification link",
     "passwordSent": "If that email is registered, you'll receive a reset link",
-    "passwordRequirements": "Min 8 chars, 1 uppercase, 1 digit"
+    "passwordRequirements": "Min 8 chars, 1 uppercase, 1 digit",
+    "verifyingEmail": "Verifying your email...",
+    "verifySuccess": "Email verified successfully!",
+    "verifySuccessDesc": "Your account is now verified. You can log in and start exploring Egypt.",
+    "verifyInvalid": "This verification link is invalid or has expired.",
+    "verifyExpired": "This verification link has expired.",
+    "verifyError": "We couldn't verify your email. The link may be invalid or already used.",
+    "goToLogin": "Go to Login",
+    "resendVerification": "Resend Verification Email",
+    "resendSuccess": "If that email is registered, a new verification link has been sent.",
+    "resendError": "Couldn't resend the verification email. Please try again."
   },
   "onboarding": {
     "title": "Personalize Your Journey",
@@ -138,7 +148,12 @@
     "noConversations": "No conversations yet",
     "startNewChat": "Start a new chat to begin your journey",
     "chatError": "Something went wrong",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "suggestions": {
+      "nearby": "What's nearby?",
+      "hidden": "Hidden gems",
+      "history": "Tell me the history"
+    }
   },
   "bot": {
     "title": "Rihla Guide",
@@ -267,7 +282,9 @@
     "noTrips": "No trips recorded yet",
     "noBadges": "No badges earned yet",
     "noQuests": "No quests started yet",
-    "joinDate": "Joined"
+    "joinDate": "Joined",
+    "historyTab": "Trip History",
+    "questsTab": "Quests"
   },
   "wallet": {
     "title": "Token Wallet",
@@ -289,23 +306,29 @@
     "paymentPending": "Payment is being processed. Your tokens will be added once confirmed.",
     "paymentFailed": "Payment was not completed. No tokens were charged.",
     "backToWallet": "Back to Wallet",
-    "refreshBalance": "Refresh Balance"
+    "refreshBalance": "Refresh Balance",
+    "packageDetail": "Package Details",
+    "tokensIncluded": "Tokens included",
+    "price": "Price",
+    "confirmPurchase": "Confirm Purchase"
   },
-  "admin": {
-    "title": "Admin Dashboard",
-    "users": "Users",
-    "auditLogs": "Audit Logs",
-    "geoManagement": "Geo Management",
-    "totalUsers": "Total Users",
-    "activeToday": "Active Today",
-    "totalChats": "Total Chats",
-    "revenue": "Revenue",
-    "ban": "Ban",
-    "unban": "Unban",
-    "changeRole": "Change Role",
-    "searchUsers": "Search users...",
-    "noUsers": "No users found",
-    "noLogs": "No audit logs found"
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "Top travelers by experience points",
+    "rank": "Rank",
+    "traveler": "Traveler",
+    "level": "Level",
+    "xp": "XP",
+    "empty": "No travelers yet — be the first!",
+    "loading": "Loading leaderboard..."
+  },
+  "memory": {
+    "title": "Trip Memory",
+    "subtitle": "Your travel history in one place",
+    "summary": "Summary",
+    "noSummary": "No summary available yet. Keep exploring and Rihla will build your travel memory.",
+    "history": "Trip History",
+    "period": "Period"
   },
   "currency": {
     "title": "Egyptian Money",
@@ -352,6 +375,29 @@
       "harassment_and_safety": "Harassment & Safety"
     }
   },
+  "guide": {
+    "dismiss": "Dismiss",
+    "distance": "{distance} m away",
+    "class": {
+      "restricted": "Restricted area ahead",
+      "caution": "Exercise caution",
+      "protected": "Protected area"
+    },
+    "area": {
+      "restricted": {
+        "body": "You are near a restricted area. Do not approach or enter it, and avoid taking photographs there."
+      },
+      "caution": {
+        "body": "You are entering an area that requires caution. Stay aware of your surroundings and follow local guidance."
+      },
+      "protected": {
+        "body": "You are near a protected area. Respect local rules and help preserve it."
+      },
+      "generic": {
+        "body": "You are near a sensitive area. Please stay alert and follow local guidance."
+      }
+    }
+  },
   "quests": {
     "title": "Quests",
     "subtitle": "Complete quests to earn XP and badges",
@@ -370,7 +416,7 @@
     "xpReward": "Reward",
     "back": "Back to quests",
     "notFound": "Quest not found",
-    "stepTitle": "Step {{n}}",
+    "stepTitle": "Step {n}",
     "markComplete": "I've done this",
     "confirmRead": "Confirm & earn XP",
     "stepLocked": "Complete the previous step first",
@@ -378,9 +424,43 @@
     "finishQuest": "Finish quest",
     "questCompleted": "Quest completed!",
     "badgeEarned": "Badge earned",
-    "xpEarned": "+{{n}} XP",
+    "xpEarned": "+{n} XP",
     "yourProgress": "Your progress",
     "themeEarned": "Theme badge unlocked",
-    "completeAllSteps": "Complete every step to earn the badge and the {{theme}} badge"
+    "completeAllSteps": "Complete every step to earn the badge and the {theme} badge"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your preferences",
+    "appearance": "Appearance",
+    "language": "Language",
+    "languageSub": "Choose your interface language",
+    "theme": "Theme",
+    "themeSub": "Light or dark mode",
+    "notifications": "Notifications",
+    "notificationsSub": "Receive safety alerts and trip updates",
+    "alerts": "Safety alerts",
+    "alertsSub": "Show live risk notifications",
+    "updates": "Trip updates",
+    "updatesSub": "Notify about itinerary changes",
+    "rafiq": "Rafiq companion",
+    "rafiqSub": "Personality used by default",
+    "guide": "The Guide",
+    "historian": "The Historian",
+    "local": "The Local",
+    "units": "Units",
+    "unitsSub": "Preferred measurement system",
+    "metric": "Metric (km)",
+    "imperial": "Imperial (mi)",
+    "account": "Account",
+    "accountSub": "Profile, security and data",
+    "editProfile": "Edit profile",
+    "privacy": "Privacy",
+    "privacySub": "Manage your data and export",
+    "exportData": "Export my data",
+    "exporting": "Exporting…",
+    "exported": "Your data export has been prepared",
+    "saved": "Saved",
+    "signOut": "Sign out"
   }
 }

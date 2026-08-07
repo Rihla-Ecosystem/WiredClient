@@ -64,6 +64,14 @@ export interface Governorate {
   geometry: GeoJsonGeometry | null;
 }
 
+export interface AreaNotice {
+  active: boolean;
+  class?: "restricted" | "caution" | "protected";
+  severity?: "critical" | "warning" | "info";
+  distance_meters?: number;
+  guide_key: string;
+}
+
 export interface TripPlan {
   coordinates: [number, number][];
   distanceMeters: number;
@@ -136,33 +144,6 @@ export function mapPoiToSite(poi: GeoPoi): Site {
   };
 }
 
-export interface GeoAdminSite {
-  id: string;
-  osm_type?: string | null;
-  osm_id?: number | null;
-  name: string;
-  name_en?: string | null;
-  name_ar?: string | null;
-  details?: SiteDetails | null;
-  categories?: string[] | null;
-  site_type?: string | null;
-  lat: number;
-  lon: number;
-}
-
-export interface GeoAdminSiteInput {
-  osm_type?: string;
-  osm_id?: number;
-  name: string;
-  name_en?: string;
-  name_ar?: string;
-  details?: SiteDetails;
-  categories?: string[];
-  site_type?: string;
-  lat: number;
-  lon: number;
-}
-
 export const geoApi = {
   getGovernorates: async (): Promise<Governorate[]> => {
     const { data } = await coreClient.get<
@@ -212,6 +193,17 @@ export const geoApi = {
       },
     });
     return (data.pois || []).map(mapPoiToSite);
+  },
+
+  getAreaNotice: async (
+    lat: number,
+    lng: number,
+    radius?: number
+  ): Promise<AreaNotice | null> => {
+    const { data } = await coreClient.get<AreaNotice>("/geo/notice", {
+      params: { lat, lon: lng, radius },
+    });
+    return data || null;
   },
 
   getRoute: async (
@@ -299,25 +291,4 @@ export const geoApi = {
       };
     }
   },
-
-  createSite: (data: SiteCreateData) =>
-    geoClient.post<{ site: unknown }>("/sites", data),
-
-  updateSite: (id: string, data: Partial<SiteCreateData>) =>
-    geoClient.patch<{ site: unknown }>(`/sites/${id}`, data),
-
-  deleteSite: (id: string) => geoClient.delete(`/sites/${id}`),
-
-  getAdminSites: async (): Promise<GeoAdminSite[]> => {
-    const { data } = await geoClient.get<GeoAdminSite[]>("/sites");
-    return data || [];
-  },
-
-  createAdminSite: (data: GeoAdminSiteInput) =>
-    geoClient.post<GeoAdminSite>("/sites", data),
-
-  updateAdminSite: (id: string, data: Partial<GeoAdminSiteInput>) =>
-    geoClient.put<GeoAdminSite>(`/sites/${id}`, data),
-
-  deleteAdminSite: (id: string) => geoClient.delete(`/sites/${id}`),
 };

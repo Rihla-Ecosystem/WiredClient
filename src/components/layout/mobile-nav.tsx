@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
-import { MessageCircle, Map, Shield, User, Home, Compass } from "lucide-react";
+import { Home, Map, MessageCircle, Shield, Compass, User } from "lucide-react";
 
 const mobileLinks = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/chat", label: "Chat", icon: MessageCircle },
   { href: "/explore", label: "Explore", icon: Map },
+  { href: "/chat", label: "Rafiq", icon: MessageCircle, special: true },
   { href: "/quests", label: "Quests", icon: Compass },
   { href: "/safety", label: "Safety", icon: Shield },
   { href: "/profile", label: "Profile", icon: User },
@@ -33,7 +33,9 @@ export function MobileNav() {
               className={cn(
                 "flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg transition-colors",
                 isActive
-                  ? "text-primary-600 dark:text-primary-400"
+                  ? link.special
+                    ? "text-faience dark:text-faience"
+                    : "text-primary-600 dark:text-primary-400"
                   : "text-gray-500 dark:text-gray-400"
               )}
             >

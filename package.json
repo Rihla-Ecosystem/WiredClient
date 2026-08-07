@@ -13,8 +13,6 @@
     "@tanstack/react-query": "^5",
     "axios": "^1",
     "clsx": "^2",
-    "date-fns": "^4",
-    "framer-motion": "^12",
     "leaflet": "^1",
     "lucide-react": "^0.510",
     "next": "^16.2.12",

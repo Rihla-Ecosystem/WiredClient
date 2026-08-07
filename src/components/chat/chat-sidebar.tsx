@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { MessageSquare, Plus, Trash2 } from "lucide-react";
 
@@ -9,6 +10,7 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 
 export function ChatSidebar({ onClose }: { onClose?: () => void }) {
   const t = useTranslations("chat");
+  const router = useRouter();
   const accessToken = useAuthStore((s) => s.accessToken);
   const {
     conversations,
@@ -31,9 +33,10 @@ export function ChatSidebar({ onClose }: { onClose?: () => void }) {
           type="button"
           onClick={() => {
             createConversation();
+            router.push("/chat");
             onClose?.();
           }}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gold hover:bg-gold-dark text-white rounded-lg font-medium transition-colors text-sm"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#2E9C93] hover:bg-[#27867f] text-white rounded-lg font-medium transition-colors text-sm"
         >
           <Plus className="w-4 h-4" />
           {t("newConversation")}
@@ -55,18 +58,20 @@ export function ChatSidebar({ onClose }: { onClose?: () => void }) {
             tabIndex={0}
             onClick={() => {
               setActiveConversation(conv.id);
+              router.push(`/chat/${conv.id}`);
               onClose?.();
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 setActiveConversation(conv.id);
+                router.push(`/chat/${conv.id}`);
                 onClose?.();
               }
             }}
             className={`w-full text-left p-3 rounded-lg transition-all text-sm group cursor-pointer ${
               activeConversationId === conv.id
-                ? "bg-gold/10 text-gold border border-gold/20"
+                ? "bg-[#2E9C93]/10 text-[#2E9C93] border border-[#2E9C93]/25"
                 : "text-muted-foreground hover:bg-sand/30 dark:hover:bg-nile-light/20 hover:text-nile dark:hover:text-sand"
             }`}
           >

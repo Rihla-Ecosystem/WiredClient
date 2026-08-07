@@ -1,61 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Noto+Sans+Egyptian+Hieroglyphs&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --nile: #0F4C5C;
-  --nile-light: #1A6B80;
-  --nile-dark: #082F3A;
-  --sand: #F4EDE4;
-  --sand-light: #FBF8F4;
-  --gold: #C9954A;
-  --gold-dark: #A67730;
-  --gold-light: #E8C070;
-  --terracotta: #C25A3C;
+  /* ── Rihla Egyptian design tokens ── */
+  /* Surfaces — warm papyrus/linen */
+  --limestone: #F5EFE0;
+  --sand: #F5EFE0;
+  --sand-light: #FAF5E8;
+  --sand-dark: #EDE4CC;
+  --surface: #FAF5E8;
+  --surface-hover: #F1E9D6;
+  /* Dark — obsidian pyramid shadow */
+  --basalt: #141008;
+  --basalt-dark: #1B1A17;
+  /* Teal — trust / depth */
+  --nile: #0F3D3E;
+  --nile-light: #1A5253;
+  --nile-dark: #082F2F;
+  /* Solar action system — keyhole glow (logo DNA) */
+  --gold: #C8831A;
+  --gold-dark: #A6772E;
+  --gold-light: #E8A820;
+  --solar-bright: #E8A820;
+  --solar-glow: #F5C040;
+  /* Egyptian material palette */
+  --terracotta: #C4623A;
   --terracotta-light: #D97A5E;
   --terracotta-dark: #9E4529;
-  --surface: #FFFFFF;
-  --surface-hover: #F9F5EF;
-  --muted: #6B6258;
-  --muted-dark: #9CA3AF;
-  --border: #E5DCCB;
-  --border-light: #F0E8D8;
-  --bg-body: #F4EDE4;
-  --fg-body: #1A1410;
-  --overlay: rgba(0, 0, 0, 0.3);
-  --shadow: rgba(201, 149, 74, 0.08);
+  --sand-tint: #D4A84E;
+  --faience: #2E9C93;
+  --faience-dark: #237A73;
+  --copper: #8A5A34;
+  --bronze: #7A5530;
+  --brass: #B8883A;
+  /* Status */
+  --safe: #2E7A54;
+  --safe-light: #3E7A5C;
+  --amber: #D98E2C;
+  --red: #B23A2E;
+  /* Neutrals */
+  --muted: #7A6845;
+  --muted-dark: #9B9181;
+  --border: rgba(27, 26, 23, 0.12);
+  --border-light: rgba(27, 26, 23, 0.06);
+  --bg-body: #F5EFE5;
+  --fg-body: #141008;
+  --overlay: rgba(20, 16, 8, 0.4);
+  --shadow: rgba(15, 61, 62, 0.08);
 }
 
 .dark {
-  --nile: #1A2128;
-  --nile-light: #232B36;
-  --nile-dark: #0A0F14;
-  --sand: #EDEDED;
-  --sand-light: #C8C8C8;
-  --gold: #E8C070;
-  --gold-dark: #C9954A;
-  --gold-light: #F2D9A5;
-  --terracotta: #D97A5E;
-  --terracotta-light: #E8957A;
-  --terracotta-dark: #B85A3C;
-  --surface: #1A2128;
-  --surface-hover: #232B36;
-  --muted: #9CA3AF;
-  --muted-dark: #6B7280;
-  --border: #2A3440;
-  --border-light: #1F2832;
-  --bg-body: #0A0F14;
-  --fg-body: #EDEDED;
+  --limestone: #F5EFE5;
+  --sand: #EFE4CD;
+  --sand-light: #F7F1E0;
+  --sand-dark: #DCD2B8;
+  --surface: #242320;
+  --surface-hover: #2A2925;
+  --basalt: #1B1A17;
+  --basalt-dark: #141008;
+  --nile: #1B1A17;
+  --nile-light: #2A2925;
+  --nile-dark: #0A0F0E;
+  --gold: #2E9C93;
+  --gold-dark: #237A73;
+  --gold-light: #E8B96A;
+  --solar-bright: #E8B96A;
+  --faience: #2E9C93;
+  --faience-dark: #237A73;
+  --copper: #8A5A34;
+  --terracotta: #B85A3C;
+  --terracotta-light: #D97A5E;
+  --terracotta-dark: #9E4529;
+  --safe: #3E7A5C;
+  --safe-light: #2E7A54;
+  --amber: #E8A820;
+  --red: #B23A2E;
+  --muted: #9B9181;
+  --muted-dark: #6B6258;
+  --border: rgba(246, 241, 231, 0.1);
+  --border-light: rgba(246, 241, 231, 0.06);
+  --bg-body: #1B1A17;
+  --fg-body: #F6F1E7;
   --overlay: rgba(0, 0, 0, 0.6);
   --shadow: rgba(0, 0, 0, 0.3);
 }
 
 @theme inline {
+  /* Legacy aliases kept so existing classes keep resolving */
   --color-nile: var(--nile);
   --color-nile-light: var(--nile-light);
   --color-nile-dark: var(--nile-dark);
   --color-sand: var(--sand);
   --color-sand-light: var(--sand-light);
+  --color-sand-dark: var(--sand-dark);
   --color-gold: var(--gold);
   --color-gold-dark: var(--gold-dark);
   --color-gold-light: var(--gold-light);
@@ -73,27 +112,45 @@
   --color-overlay: var(--overlay);
   --color-shadow: var(--shadow);
 
-  --color-primary-50: #FDF7ED;
-  --color-primary-100: #F9EDD3;
-  --color-primary-200: #F2D9A5;
-  --color-primary-300: #E8C070;
-  --color-primary-400: #DBA94A;
-  --color-primary-500: #C9954A;
-  --color-primary-600: #A67730;
-  --color-primary-700: #7D5A24;
-  --color-primary-800: #543D1A;
-  --color-primary-900: #2B1F0D;
+  /* New design tokens */
+  --color-limestone: var(--limestone);
+  --color-basalt: var(--basalt);
+  --color-basalt-dark: var(--basalt-dark);
+  --color-faience: var(--faience);
+  --color-faience-dark: var(--faience-dark);
+  --color-copper: var(--copper);
+  --color-bronze: var(--bronze);
+  --color-brass: var(--brass);
+  --color-sand-tint: var(--sand-tint);
+  --color-solar: var(--gold);
+  --color-solar-bright: var(--solar-bright);
+  --color-solar-glow: var(--solar-glow);
+  --color-safe: var(--safe);
+  --color-safe-light: var(--safe-light);
+  --color-amber: var(--amber);
+  --color-red: var(--red);
 
-  --color-secondary-50: #EDF5F8;
-  --color-secondary-100: #D3E8EF;
-  --color-secondary-200: #A7D1DF;
-  --color-secondary-300: #7BBACF;
-  --color-secondary-400: #4FA3BF;
-  --color-secondary-500: #0F4C5C;
-  --color-secondary-600: #0C3D4A;
-  --color-secondary-700: #092E38;
-  --color-secondary-800: #061F26;
-  --color-secondary-900: #031014;
+  --color-primary-50: #FDF7EC;
+  --color-primary-100: #F9E9CC;
+  --color-primary-200: #F2D69D;
+  --color-primary-300: #E8B96A;
+  --color-primary-400: #DB9A3C;
+  --color-primary-500: #C8831A;
+  --color-primary-600: #A76515;
+  --color-primary-700: #7D4A12;
+  --color-primary-800: #54300E;
+  --color-primary-900: #2B1807;
+
+  --color-secondary-50: #EDF5F4;
+  --color-secondary-100: #D3E7E6;
+  --color-secondary-200: #A9CFCE;
+  --color-secondary-300: #7FB5B4;
+  --color-secondary-400: #4F9A99;
+  --color-secondary-500: #2E9C93;
+  --color-secondary-600: #0F3D3E;
+  --color-secondary-700: #0B2F30;
+  --color-secondary-800: #071F20;
+  --color-secondary-900: #030F0F;
 
   --color-background: var(--bg-body);
   --color-background-dark: var(--nile-dark);
@@ -106,9 +163,9 @@
   --color-ring: var(--gold);
   --color-accent: var(--terracotta);
 
-  --font-heading: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-arabic: 'Noto Naskh Arabic', serif;
+  --font-heading: 'Cairo', 'Noto Naskh Arabic', sans-serif;
+  --font-body: 'Cairo', system-ui, sans-serif;
+  --font-arabic: 'Cairo', 'Noto Naskh Arabic', sans-serif;
 
   --radius-card: 0.75rem;
   --radius-button: 0.5rem;
@@ -172,7 +229,7 @@
   }
 
   .text-gradient {
-    background-image: linear-gradient(to right, var(--gold), var(--gold-dark), var(--nile));
+    background-image: linear-gradient(to right, var(--gold), var(--gold-light), var(--nile));
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -202,4 +259,12 @@
     box-shadow: 0 4px 12px var(--shadow);
     border-color: color-mix(in srgb, var(--gold) 50%, transparent);
   }
+}
+
+@keyframes rihlaHiero {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 0.95; }
+  25%  { transform: translate(6px, -16px) rotate(4deg); }
+  50%  { transform: translate(-4px, -28px) rotate(-3deg); }
+  75%  { transform: translate(8px, -12px) rotate(2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); opacity: 0.95; }
 }

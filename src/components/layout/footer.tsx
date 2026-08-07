@@ -4,9 +4,10 @@ import {
   Map,
   Shield,
   Github,
-  Twitter,
+  X,
   Mail,
 } from "lucide-react";
+import { RihlaGlyph } from "@/components/shared/rihla-logo";
 
 export function Footer() {
   return (
@@ -15,9 +16,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg gradient-gold flex items-center justify-center">
-                <span className="text-white font-bold text-sm">R</span>
-              </div>
+              <RihlaGlyph size={36} />
               <span className="font-heading text-xl font-semibold text-gradient">
                 Rihla
               </span>
@@ -83,8 +82,8 @@ export function Footer() {
                   href="#"
                   className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 transition-colors"
                 >
-                  <Twitter className="w-3.5 h-3.5" />
-                  Twitter
+                  <X className="w-3.5 h-3.5" />
+                  X (Twitter)
                 </a>
               </li>
               <li>

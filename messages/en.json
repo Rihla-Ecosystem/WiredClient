@@ -81,7 +81,6 @@
     "verifyInvalid": "This verification link is invalid or has expired.",
     "verifyExpired": "This verification link has expired.",
     "verifyError": "We couldn't verify your email. The link may be invalid or already used.",
-    "goToLogin": "Go to Login",
     "resendVerification": "Resend Verification Email",
     "resendSuccess": "If that email is registered, a new verification link has been sent.",
     "resendError": "Couldn't resend the verification email. Please try again."
@@ -462,5 +461,24 @@
     "exported": "Your data export has been prepared",
     "saved": "Saved",
     "signOut": "Sign out"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Context-aware alerts from your area",
+    "all": "All",
+    "unread": "Unread",
+    "markAllRead": "Mark all read",
+    "markRead": "Mark as read",
+    "delete": "Delete",
+    "inbox": "Inbox",
+    "reports": "Reports",
+    "empty": "No notifications yet. Alerts appear here as you travel.",
+    "pagingHint": "Showing the latest notifications",
+    "noReports": "No context reports yet.",
+    "safetyScore": "Safety score",
+    "unknownArea": "Unknown area",
+    "analyzingArea": "Analyzing your area…",
+    "openInbox": "Open inbox",
+    "dismiss": "Dismiss"
   }
 }

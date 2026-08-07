@@ -8,6 +8,7 @@ import { AuthGuard } from "@/components/layout/auth-guard";
 import { ChatMessage } from "@/components/chat/chat-message";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChatSidebar } from "@/components/chat/chat-sidebar";
+import { ContextAlert } from "@/components/chat/context-alert";
 import { EmptyState } from "@/components/shared/empty-state";
 import { useChatStore } from "@/lib/stores/chat-store";
 
@@ -91,6 +92,7 @@ export default function ChatPage() {
             onScroll={handleScroll}
             className="flex-1 overflow-y-auto px-4 py-6 space-y-4"
           >
+            <ContextAlert />
             {!activeConv || activeMessages.length === 0 ? (
               <EmptyState
                 icon="MessageSquare"
@@ -107,6 +109,9 @@ export default function ChatPage() {
                   timestamp={msg.timestamp}
                   metadata={msg.metadata}
                   audioUrl={msg.audioUrl}
+                  usage={msg.usage}
+                  providerCalls={msg.providerCalls}
+                  providerAttempts={msg.providerAttempts}
                 />
               ))
             )}

@@ -1,8 +1,13 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { Bot, User, Shield, MapPin } from "lucide-react";
+import { Bot, User, Shield, MapPin, Sparkles, Cpu } from "lucide-react";
 import { MarkdownContent } from "./markdown-content";
+import type {
+  ProviderCall,
+  ProviderAttempt,
+  UsageResult,
+} from "@/lib/api/chat";
 
 type Persona = "auto" | "tour_guide" | "local_expert" | "safety_guru";
 
@@ -14,6 +19,9 @@ interface ChatMessageProps {
   isStreaming?: boolean;
   metadata?: Record<string, string>;
   audioUrl?: string;
+  usage?: UsageResult | null;
+  providerCalls?: ProviderCall[] | null;
+  providerAttempts?: ProviderAttempt[] | null;
 }
 
 const PERSONA_CONFIG = {
@@ -30,6 +38,9 @@ export function ChatMessage({
   isStreaming,
   metadata,
   audioUrl,
+  usage,
+  providerCalls,
+  providerAttempts,
 }: ChatMessageProps) {
   const isUser = role === "user";
   const pConfig =
@@ -103,6 +114,36 @@ export function ChatMessage({
                 {key}: {val}
               </span>
             ))}
+          </div>
+        )}
+
+        {/* Provider usage / cost telemetry */}
+        {!isUser && !isStreaming && (usage || (providerCalls?.length ?? 0) > 0) && (
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            {providerCalls && providerCalls.length > 0 && (
+              <span className="inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg bg-faience/10 dark:bg-faience/15 text-faience border border-faience/20">
+                <Cpu className="w-3.5 h-3.5" />
+                {providerCalls.length} call{providerCalls.length > 1 ? "s" : ""}
+                {providerCalls[0]?.actualModel || providerCalls[0]?.requestedModel
+                  ? ` · ${providerCalls[0].actualModel || providerCalls[0].requestedModel}`
+                  : ""}
+              </span>
+            )}
+            {typeof usage?.totalTokens === "number" && (
+              <span className="inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg bg-sand/30 dark:bg-nile-light/20 text-muted-foreground">
+                <Sparkles className="w-3.5 h-3.5" />
+                {usage.totalTokens.toLocaleString()} tokens
+                {typeof usage.inputTokens === "number" && typeof usage.outputTokens === "number"
+                  ? ` (↑${usage.inputTokens.toLocaleString()} ↓${usage.outputTokens.toLocaleString()})`
+                  : ""}
+              </span>
+            )}
+            {providerAttempts && providerAttempts.length > 1 && (
+              <span className="inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-300/50 dark:border-amber-800/50">
+                <Cpu className="w-3.5 h-3.5" />
+                {providerAttempts.length - 1} retr{providerAttempts.length - 1 > 1 ? "ies" : "y"}
+              </span>
+            )}
           </div>
         )}
       </div>

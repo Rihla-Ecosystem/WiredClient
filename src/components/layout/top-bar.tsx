@@ -7,8 +7,9 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { RihlaGlyph } from "@/components/shared/rihla-logo";
+import { NotificationBell } from "@/components/layout/notification-bell";
 import {
-  Bell, Menu, LogOut, User, Wallet, Compass, Shield, X,
+  Menu, LogOut, User, Wallet, Compass, Shield, X,
   Home, MessageCircle, Landmark, Coins, Settings, Ticket,
 } from "lucide-react";
 
@@ -269,25 +270,7 @@ export function TopBar() {
 
           {/* Right: actions */}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Link
-              href="/safety"
-              title="Safety alerts"
-              aria-label="Safety alerts"
-              style={{
-                background: "rgba(245,239,224,0.07)",
-                border: "1px solid rgba(245,239,224,0.16)",
-                borderRadius: 10,
-                width: 36,
-                height: 36,
-                position: "relative",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: `${C.limestone}80`,
-              }}
-            >
-              <Bell size={16} strokeWidth={1.9} style={{ animation: "rihlaWiggle 5s ease-in-out infinite" }} />
-            </Link>
+            <NotificationBell />
 
             <span className="hidden md:inline-flex">
               <LanguageSwitcher />

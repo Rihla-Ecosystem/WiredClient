@@ -1,5 +1,13 @@
 import { create } from "zustand";
-import { chatApi, type Conversation, type Persona, type IdentifyResult } from "@/lib/api/chat";
+import {
+  chatApi,
+  type Conversation,
+  type Persona,
+  type IdentifyResult,
+  type ProviderCall,
+  type ProviderAttempt,
+  type UsageResult,
+} from "@/lib/api/chat";
 import { useAuthStore } from "@/lib/stores/auth-store";
 
 interface Message {
@@ -13,6 +21,9 @@ interface Message {
   metadata?: Record<string, string>;
   audioUrl?: string;
   audioMime?: string;
+  usage?: UsageResult | null;
+  providerCalls?: ProviderCall[] | null;
+  providerAttempts?: ProviderAttempt[] | null;
 }
 
 interface ContextData {
@@ -248,7 +259,7 @@ export const useChatStore = create<ChatState>()((set, get) => ({
     set({ isStreaming: true, error: null });
 
     try {
-      const { text, conversationId: backendId } = await chatApi.streamMessage(
+      const result = await chatApi.streamMessage(
         content,
         state.persona === "auto" ? null : state.persona,
         (token) => get().appendStreamToken(conversationId, token),
@@ -259,12 +270,24 @@ export const useChatStore = create<ChatState>()((set, get) => ({
         }
       );
 
+      const telemetry: Partial<Message> = {
+        usage: result.usage ?? null,
+        providerCalls: result.providerCalls ?? [],
+        providerAttempts: result.providerAttempts ?? [],
+      };
+
+      const { text, conversationId: backendId } = result;
+
       if (backendId && backendId !== conversationId) {
         const messages = { ...get().messages };
         const existing = messages[conversationId] || [];
         delete messages[conversationId];
+        const updatedLast = [
+          ...existing.slice(0, -1),
+          { ...existing[existing.length - 1], ...telemetry },
+        ];
         set((s) => ({
-          messages: { ...messages, [backendId]: existing },
+          messages: { ...messages, [backendId]: updatedLast },
           currentConversationId: backendId,
           conversations: s.conversations.map((c) =>
             c.id === conversationId
@@ -284,6 +307,7 @@ export const useChatStore = create<ChatState>()((set, get) => ({
         get().finalizeStream(backendId, text);
       } else {
         get().finalizeStream(conversationId, text);
+        get().updateMessage(conversationId, assistantMsg.id, telemetry);
         set((s) => ({
           conversations: s.conversations.map((c) =>
             c.id === conversationId
@@ -368,6 +392,10 @@ export const useChatStore = create<ChatState>()((set, get) => ({
       if (!patch.audioUrl) {
         patch.content = result.text_response || "";
       }
+      patch.usage = result.usage ?? null;
+      patch.providerCalls = result.providerCalls ?? [];
+      patch.providerAttempts = result.providerAttempts ?? [];
+      if (result.model) patch.metadata = { model: result.model };
       get().updateMessage(conversationId, assistantMsg.id, patch);
       set({ isStreaming: false });
     } catch (e) {
@@ -424,6 +452,9 @@ export const useChatStore = create<ChatState>()((set, get) => ({
       });
       get().updateMessage(conversationId, assistantMsg.id, {
         content: formatIdentify(result),
+        usage: result.usage ?? null,
+        providerCalls: result.providerCalls ?? [],
+        providerAttempts: result.providerAttempts ?? [],
       });
       set({ isStreaming: false });
     } catch (e) {

@@ -22,6 +22,55 @@ export interface Conversation {
   messageCount: number;
 }
 
+export interface UsageTelemetry {
+  model?: string | null;
+  inputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
+  reasoningTokens?: number;
+  imageInputTokens?: number;
+  imageOutputTokens?: number;
+  audioInputTokens?: number;
+  audioOutputTokens?: number;
+}
+
+export interface ProviderCall {
+  provider: string;
+  providerCallId?: string;
+  providerCallMade?: boolean;
+  requestedModel?: string | null;
+  actualModel?: string | null;
+  operation?: string | null;
+  usageSource?: string | null;
+  usageCompleteness?: string | null;
+  inputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
+  reasoningTokens?: number;
+}
+
+export interface ProviderAttempt {
+  provider: string;
+  attemptId?: string;
+  attemptNumber?: number;
+  operation?: string | null;
+  requestedModel?: string | null;
+  actualModel?: string | null;
+  outcome?: string | null;
+  providerCallStarted?: boolean;
+  providerResponseReceived?: boolean;
+  errorCategory?: string | null;
+  httpStatus?: number | null;
+}
+
+export interface UsageResult {
+  model?: string | null;
+  inputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
+  reasoningTokens?: number;
+}
+
 export interface ChatResult {
   response: string;
   conversation_id: string;
@@ -32,6 +81,10 @@ export interface ChatResult {
   geography?: Record<string, unknown>;
   safety?: Record<string, unknown>;
   currency?: Record<string, unknown>;
+  usage?: UsageResult | null;
+  model?: string | null;
+  providerCalls?: ProviderCall[] | null;
+  providerAttempts?: ProviderAttempt[] | null;
 }
 
 export interface VoiceResult {
@@ -39,13 +92,10 @@ export interface VoiceResult {
   audio_response?: string | null;
   audio_url?: string | null;
   conversation_id?: string | null;
-  usage?: {
-    model?: string | null;
-    inputTokens?: number;
-    outputTokens?: number;
-    totalTokens?: number;
-  } | null;
+  usage?: UsageResult | null;
   model?: string | null;
+  providerCalls?: ProviderCall[] | null;
+  providerAttempts?: ProviderAttempt[] | null;
 }
 
 export interface IdentifyResult {
@@ -58,13 +108,19 @@ export interface IdentifyResult {
   image_url?: string | null;
   nearby_sites?: unknown[] | null;
   cached?: boolean;
-  usage?: {
-    model?: string | null;
-    inputTokens?: number;
-    outputTokens?: number;
-    totalTokens?: number;
-  } | null;
+  usage?: UsageResult | null;
   model?: string | null;
+  providerCalls?: ProviderCall[] | null;
+  providerAttempts?: ProviderAttempt[] | null;
+}
+
+export interface StreamResult {
+  text: string;
+  conversationId: string;
+  usage?: UsageResult | null;
+  model?: string | null;
+  providerCalls?: ProviderCall[] | null;
+  providerAttempts?: ProviderAttempt[] | null;
 }
 
 interface BackendConversation {
@@ -105,7 +161,7 @@ export const chatApi = {
       lon?: number;
       conversationId?: string;
     }
-  ): Promise<{ text: string; conversationId: string }> => {
+  ): Promise<StreamResult> => {
     const token = useAuthStore.getState().accessToken;
     const response = await fetch(`${CORE_API_URL}/chat/stream`, {
       method: "POST",
@@ -132,6 +188,10 @@ export const chatApi = {
     let fullReply = "";
     let buffer = "";
     let conversationId = context?.conversationId || "";
+    let finalUsage: UsageResult | null = null;
+    let finalModel: string | null = null;
+    let finalCalls: ProviderCall[] = [];
+    let finalAttempts: ProviderAttempt[] = [];
 
     const handleEvent = (payload: Record<string, unknown>) => {
       if (payload.error) {
@@ -146,6 +206,18 @@ export const chatApi = {
       }
       if (typeof payload.conversation_id === "string") {
         conversationId = payload.conversation_id;
+      }
+      if (payload.usage && typeof payload.usage === "object") {
+        finalUsage = payload.usage as UsageResult;
+      }
+      if (typeof payload.model === "string") {
+        finalModel = payload.model;
+      }
+      if (Array.isArray(payload.providerCalls)) {
+        finalCalls = payload.providerCalls as ProviderCall[];
+      }
+      if (Array.isArray(payload.providerAttempts)) {
+        finalAttempts = payload.providerAttempts as ProviderAttempt[];
       }
     };
 
@@ -170,7 +242,14 @@ export const chatApi = {
       }
     }
 
-    return { text: fullReply, conversationId };
+    return {
+      text: fullReply,
+      conversationId,
+      usage: finalUsage,
+      model: finalModel,
+      providerCalls: finalCalls,
+      providerAttempts: finalAttempts,
+    };
   },
 
   getConversations: async (): Promise<Conversation[]> => {

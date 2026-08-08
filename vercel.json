@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/geo/:path*",
+      "destination": "http://88.222.220.235:8001/api/v1/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "http://88.222.220.235:3005/api/:path*"
+    }
+  ]
+}

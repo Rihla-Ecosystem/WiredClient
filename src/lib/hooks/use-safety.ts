@@ -32,11 +32,3 @@ export function useSourceHealth() {
     refetchInterval: 30000,
   });
 }
-
-export function useCityRisk(city: string) {
-  return useQuery({
-    queryKey: ["safety", "city", city],
-    queryFn: () => safetyApi.getCityRisk(city),
-    enabled: !!city,
-  });
-}

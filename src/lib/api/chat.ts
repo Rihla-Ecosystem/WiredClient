@@ -1,4 +1,4 @@
-import { coreClient } from "./client";
+import { coreClient, coreBaseURL } from "./client";
 import { useAuthStore } from "@/lib/stores/auth-store";
 
 export type Persona = "auto" | "tour_guide" | "local_expert" | "safety_guru";
@@ -132,8 +132,7 @@ interface BackendConversation {
   _count?: { messages?: number };
 }
 
-const CORE_API_URL =
-  process.env.NEXT_PUBLIC_CORE_API_URL || "http://localhost:3000/api";
+const CORE_API_URL = coreBaseURL;
 
 export const chatApi = {
   sendMessage: (

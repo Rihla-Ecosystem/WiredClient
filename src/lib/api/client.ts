@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 import { useAuthStore } from "@/lib/stores/auth-store";
 
-const coreBaseURL =
+export const coreBaseURL =
   process.env.NEXT_PUBLIC_CORE_API_URL || "http://localhost:3000/api";
 
 let refreshPromise: Promise<string | null> | null = null;
@@ -82,8 +82,3 @@ const createClient = (baseURL: string, opts?: { withRefresh?: boolean; withCrede
 };
 
 export const coreClient = createClient(coreBaseURL, { withRefresh: true });
-
-export const geoClient = createClient(
-  process.env.NEXT_PUBLIC_GEO_API_URL || "http://localhost:8000/api/v1",
-  { withCredentials: false }
-);

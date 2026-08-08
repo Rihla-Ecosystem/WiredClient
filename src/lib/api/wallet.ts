@@ -114,9 +114,4 @@ export const walletApi = {
       checkoutUrl: data.data?.checkoutUrl,
     };
   },
-
-  confirmPayment: (paymentId: string) =>
-    coreClient.post<{ success: boolean; tokens: number }>("/wallet/confirm", {
-      paymentId,
-    }),
 };

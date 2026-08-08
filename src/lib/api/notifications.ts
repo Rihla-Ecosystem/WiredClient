@@ -1,4 +1,4 @@
-import { coreClient } from "./client";
+import { coreClient, coreBaseURL } from "./client";
 import { useAuthStore } from "@/lib/stores/auth-store";
 
 export type NotificationPriority = "LOW" | "NORMAL" | "HIGH" | "CRITICAL";
@@ -179,8 +179,7 @@ export interface NotificationPreferences {
   quietHours: { enabled: boolean; from: string; to: string };
 }
 
-const CORE_API_URL =
-  process.env.NEXT_PUBLIC_CORE_API_URL || "http://localhost:3000/api";
+const CORE_API_URL = coreBaseURL;
 
 export const notificationsApi = {
   /** Report the user's current location; the engine may generate alerts. */

@@ -1,8 +1,3 @@
-export const API_BASE_URLS = {
-  core: process.env.NEXT_PUBLIC_CORE_API_URL || "http://localhost:3000/api",
-  geo: process.env.NEXT_PUBLIC_GEO_API_URL || "http://localhost:8000/api/v1",
-} as const;
-
 export const PERSONAS = [
   { value: "auto", label: "Auto", icon: "Sparkles", description: "Smart persona selection" },
   { value: "tour_guide", label: "Tour Guide", icon: "Compass", description: "History & attractions" },

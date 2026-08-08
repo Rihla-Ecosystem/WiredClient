@@ -44,7 +44,4 @@ export const safetyApi = {
 
   getSourceHealth: () =>
     coreClient.get<{ sources: SourceHealthEntry[] }>("/safety/sources"),
-
-  getCityRisk: (city: string) =>
-    coreClient.get<CityRisk>(`/safety/city/${encodeURIComponent(city)}`),
 };

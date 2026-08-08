@@ -9,11 +9,11 @@ The **live, functional** frontend. Next.js 16 + React 19, next-intl (i18n), Tail
 ## Run / test
 - Dev: `npm run dev -- -p 3050` (port 3000 taken by Core) — first compile 60-75s on this FS
 - Build: `npm run build` · start: `npm start` · lint: `npm run lint`
-- Env: `NEXT_PUBLIC_CORE_API_URL=http://localhost:3000/api`, `NEXT_PUBLIC_GEO_API_URL=http://localhost:8000/api/v1`
+- Env: `NEXT_PUBLIC_CORE_API_URL=http://localhost:3000/api`, `NEXT_PUBLIC_SITE_URL=http://localhost:3050`
 
 ## External contract
-- Talks to Core-Server (`/auth`, `/chat[/stream]`, `/voice`, `/identify`, `/tokens`, `/payments`, `/journeys`, `/memory`, `/admin`, `/currency`)
-- Talks to GeoContext (`/geo/...`) via geoClient
+- Talks to Core-Server (only gateway): `/auth`, `/chat[/stream]`, `/voice`, `/identify`, `/tokens`, `/payments`, `/journeys`, `/memory`, `/currency`, `/geo/...`, `/safety/...`, `/context-notifications/...`
+- All geo/safety/notice traffic goes `coreClient` → Core → GIS proxy (no direct GeoContext calls)
 - Auth: JWT via Zustand store; axios 401 → auto-refresh (`/auth/refresh` cookie) → retry; logout on failure
 
 ## Key files

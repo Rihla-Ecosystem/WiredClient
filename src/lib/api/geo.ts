@@ -1,4 +1,4 @@
-import { coreClient, geoClient } from "./client";
+import { coreClient } from "./client";
 import type { Site } from "@/lib/types";
 
 export const HERITAGE_CATEGORIES = [

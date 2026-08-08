@@ -1,6 +1,7 @@
 import createMiddleware from "next-intl/middleware";
 import { locales, defaultLocale } from "@/lib/i18n/config";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 const intlMiddleware = createMiddleware({
   locales,
@@ -27,7 +28,11 @@ export default function middleware(request: NextRequest) {
   const isApi = pathname.includes("/api/");
   const isStatic = pathname.includes("/_next") || pathname.includes("/favicon");
 
-  if (isApi || isStatic) {
+  if (isApi) {
+    return NextResponse.next();
+  }
+
+  if (isStatic) {
     return intlMiddleware(request);
   }
 

@@ -9,7 +9,7 @@
 - Chat/voice/identify response types and message objects now carry `usage` / `providerCalls` / `providerAttempts` telemetry (captured from ai-service, rendered on assistant bubbles).
 
 ## In-progress / next
-- Notifications inbox + context alerts + usage telemetry shipped; push pending if uncommitted. Next: verify SSE stream live-delivery in a real browser (needs a logged-in session + location), and consider an admin notifications UI (backend supports `/api/admin/notifications/*`, client has none).
+- PROD LIVE-SITE FIX PUSHED (new commit): middleware no longer 307-redirects `/api/*` → `/en/api/*` (was breaking the `/api/:path*` rewrite → every API call 404: login, `/auth/refresh`, `/geo/notice`). Now `isApi` → `NextResponse.next()` (bypasses next-intl). CSP: added `worker-src 'self' blob:` (silences extension worker block) + `img-src https://*.tile.openstreetmap.org https://unpkg.com` (Leaflet tiles + markers). `connect-src` unchanged. PENDING: redeploy + smoke (login, chat SSE, map/nearby). Notifications inbox + context alerts + telemetry shipped; next: verify SSE live-delivery in a real browser.
 
 ## Architecture notes
 - Full API layer in `src/lib/api/` (coreClient w/ 401 refresh + queue; geoClient no refresh).
@@ -30,6 +30,7 @@
 - Notifications SSE uses fetch (Bearer token); bell connects only when authenticated.
 
 ## Changelog
+- 2026-08-08: PROD LIVE-SITE FIX. Two files: `src/middleware.ts` (`isApi` → `NextResponse.next()`, no longer runs next-intl on `/api/*`, kills `/en/api/...` 404s on login/refresh/geo-notice) + `next.config.ts` CSP (`worker-src 'self' blob:`; `img-src` + `https://*.tile.openstreetmap.org` + `https://unpkg.com`). `next build` passes. Pushed to `Rihla-Ecosystem/WiredClient` main.
 - 2026-08-08: Wired the new backend context-notification subsystem into the client. Added `src/lib/api/notifications.ts` (inbox/unread/read-all/delete/reports/preferences/SSE via fetch) + `src/lib/stores/notification-store.ts` (zustand, live stream apply, location reporting). New `/notifications` page (inbox + reports tabs, priority styling, mark-all-read, delete), `NotificationBell` with unread badge in TopBar (auth-gated, 60s poll), `ContextAlert` in chat page that geolocates → reports location → surfaces CRITICAL/HIGH alerts + navigates to inbox. Added usage telemetry types (`UsageResult`, `ProviderCall`, `ProviderAttempt`) to chat API; stream/voice/identify now stash `usage`/`providerCalls`/`providerAttempts` on assistant messages and `chat-message.tsx` renders calls/tokens/retries chips. i18n `notifications.*` en/ar. tsc + next build pass, page 200 on 3100.
 - 2026-08-07: Created `AGENTS.md` + `CONTEXT.md` (from package.json + api layer). Not started this session.
 - 2026-08-07: Sensitive-area feature: added `geoApi.getAreaNotice` + `AreaNotice` type, `use-area-notice` hook (refetchInterval 15s, enabled on coords), `SensitiveAreaNotice` component (self-geolocates via useEffect, dismissible banner, class-colored severity, mounted in `[locale]/layout.tsx`), i18n `guide.*` en/ar. Client build passes.

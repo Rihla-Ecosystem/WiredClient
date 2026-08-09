@@ -126,7 +126,7 @@ export default function HomePage() {
                     {feature.desc}
                   </p>
                   <span className="inline-flex items-center gap-1 mt-4 text-sm font-semibold text-gold opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                    {c("learnMore")}
+                    {t("learnMore")}
                     <ArrowRight className="w-4 h-4" />
                   </span>
                 </Link>
@@ -178,11 +178,6 @@ export default function HomePage() {
             </RihlaButton>
           </Link>
         </div>
-      </section>
-
-      {/* Footer extra */}
-      <section className="py-8 bg-[#0c1313] text-center text-limestone/40 text-sm">
-        &copy; {new Date().getFullYear()} {c("appName")}. All rights reserved.
       </section>
     </div>
   );

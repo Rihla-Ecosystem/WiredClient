@@ -29,7 +29,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-              <RihlaGlyph size={40} />
+              <RihlaGlyph size={48} />
               <span className="font-heading text-xl font-semibold text-gradient">
                 Rihla
               </span>

@@ -4,15 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { MapPin, ShieldAlert, ShieldCheck, X } from "lucide-react";
 import { useAreaNotice } from "@/lib/hooks/use-area-notice";
+import { useAuthStore } from "@/lib/stores/auth-store";
 
 export function SensitiveAreaNotice() {
   const t = useTranslations("guide");
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const [dismissed, setDismissed] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const resolvingRef = useRef(false);
 
   useEffect(() => {
-    if (coords || resolvingRef.current) return;
+    if (coords || resolvingRef.current || !isAuthenticated) return;
     if (!("geolocation" in navigator)) return;
     resolvingRef.current = true;
     navigator.geolocation.getCurrentPosition(
@@ -20,11 +22,11 @@ export function SensitiveAreaNotice() {
       () => undefined,
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
-  }, [coords]);
+  }, [coords, isAuthenticated]);
 
   const { data: notice } = useAreaNotice(coords?.lat, coords?.lng);
 
-  if (!notice?.active || dismissed) return null;
+  if (!isAuthenticated || !notice?.active || dismissed) return null;
 
   const classes: Record<string, { bar: string; chip: string }> = {
     critical: { bar: "bg-red-600", chip: "bg-red-700" },
@@ -57,7 +59,7 @@ export function SensitiveAreaNotice() {
       </div>
       <div className={`px-3 py-2.5 text-sm text-white ${pal.bar}`}>
         {t(`area.${notice.class}.body`, {
-          defaultValue: t("area.generic"),
+          defaultValue: t("area.generic.body"),
         })}
       </div>
     </div>

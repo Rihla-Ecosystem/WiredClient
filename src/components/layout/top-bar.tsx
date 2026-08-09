@@ -36,14 +36,14 @@ const PARTICLES = [
 ];
 
 const HIEROGLYPHS = [
-  { glyph: "𓋹", left: "3%", top: "22%", delay: "0s", dur: "6s", size: 20 },   // ankh
-  { glyph: "𓂀", left: "11%", top: "55%", delay: "1.4s", dur: "7s", size: 22 },  // eye of horus
-  { glyph: "𓆣", left: "22%", top: "30%", delay: "3s", dur: "6.5s", size: 18 }, // scarab
-  { glyph: "𓅃", left: "42%", top: "60%", delay: "0.8s", dur: "8s", size: 20 }, // falcon
-  { glyph: "𓇼", left: "56%", top: "24%", delay: "4s", dur: "6s", size: 18 },   // star
-  { glyph: "𓊽", left: "76%", top: "58%", delay: "2.2s", dur: "7s", size: 19 }, // djed pillar
-  { glyph: "𓆼", left: "88%", top: "28%", delay: "1.2s", dur: "8s", size: 20 }, // lotus
-  { glyph: "𓆑", left: "31%", top: "52%", delay: "4.6s", dur: "6.5s", size: 17 }, // cobra
+  { glyph: "𓋹", left: "3%", top: "30%", dur: "14s", size: 20, drift: "rihlaDrift1" },   // ankh
+  { glyph: "𓂀", left: "11%", top: "62%", dur: "17s", size: 22, drift: "rihlaDrift2" },  // eye of horus
+  { glyph: "𓆣", left: "24%", top: "26%", dur: "15s", size: 18, drift: "rihlaDrift3" }, // scarab
+  { glyph: "𓅃", left: "42%", top: "66%", dur: "19s", size: 20, drift: "rihlaDrift4" }, // falcon
+  { glyph: "𓇼", left: "58%", top: "22%", dur: "14s", size: 18, drift: "rihlaDrift2" }, // star
+  { glyph: "𓊽", left: "74%", top: "64%", dur: "18s", size: 19, drift: "rihlaDrift3" }, // djed pillar
+  { glyph: "𓆼", left: "86%", top: "30%", dur: "16s", size: 20, drift: "rihlaDrift1" }, // lotus
+  { glyph: "𓆑", left: "30%", top: "48%", dur: "20s", size: 17, drift: "rihlaDrift2" }, // cobra
 ];
 
 interface TopBarLink {
@@ -90,6 +90,9 @@ export function TopBar() {
         @keyframes rihlaGlow { 0%,100%{box-shadow:0 0 0 0 rgba(232,168,32,0.45)} 50%{box-shadow:0 0 0 8px rgba(232,168,32,0)} }
         @keyframes rihlaFadeUp { 0%{opacity:0;transform:translateY(10px)} 100%{opacity:1;transform:translateY(0)} }
         @keyframes rihlaHiero { 0%{transform:translate(0,0) rotate(0deg);opacity:0.95} 25%{transform:translate(6px,-16px) rotate(4deg)} 50%{transform:translate(-4px,-28px) rotate(-3deg)} 75%{transform:translate(8px,-12px) rotate(2deg)} 100%{transform:translate(0,0) rotate(0deg);opacity:0.95} }
+        @keyframes rihlaDrift1 { 0%{transform:translate(0,0) rotate(0deg);opacity:0.1} 15%{opacity:0.85} 50%{transform:translate(-42px,-14px) rotate(-8deg)} 75%{transform:translate(24px,-34px) rotate(6deg)} 100%{transform:translate(0,0) rotate(0deg);opacity:0.1} }
+        @keyframes rihlaDrift2 { 0%{transform:translate(0,0) rotate(0deg);opacity:0.15} 18%{opacity:0.9} 50%{transform:translate(38px,-24px) rotate(7deg)} 72%{transform:translate(-20px,-16px) rotate(-5deg)} 100%{transform:translate(0,0) rotate(0deg);opacity:0.15} }
+        @keyframes rihlaDrift3 { 0%{transform:translate(0,0) rotate(0deg);opacity:0.2} 20%{opacity:0.95} 50%{transform:translate(-28px,12px) rotate(6deg)} 75%{transform:translate(30px,-10px) rotate(-6deg)} 100%{transform:translate(0,0) rotate(0deg);opacity:0.2} }
       `}</style>
 
       <div
@@ -172,9 +175,9 @@ export function TopBar() {
               fontSize: h.size,
               color: "#F0B429",
               textShadow: "0 0 12px rgba(240,180,41,0.65), 0 0 2px rgba(240,180,41,0.9)",
-              opacity: 0.9,
-              animation: `rihlaHiero ${h.dur}s ease-in-out ${h.delay} infinite`,
-              willChange: "transform",
+              opacity: 0.2,
+              animation: `${h.drift} ${h.dur} ease-in-out infinite`,
+              willChange: "transform, opacity",
               pointerEvents: "none",
               userSelect: "none",
             }}
@@ -221,11 +224,11 @@ export function TopBar() {
             >
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
-            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
-              <RihlaGlyph size={36} />
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 11, flexShrink: 0 }}>
+              <RihlaGlyph size={52} />
               <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", lineHeight: 1 }} className="hidden sm:flex">
-                <span style={{ fontFamily: "'Cairo',sans-serif", fontSize: "18px", fontWeight: 500, color: C.limestone, letterSpacing: "0.02em" }}>رحلة Rihla</span>
-                <span style={{ fontFamily: "'Cairo',sans-serif", fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: `${C.sand}90`, marginTop: 3 }}>AI Travel Companion</span>
+                <span style={{ fontFamily: "'Cairo',sans-serif", fontSize: "21px", fontWeight: 600, color: C.limestone, letterSpacing: "0.02em" }}>رحلة Rihla</span>
+                <span style={{ fontFamily: "'Cairo',sans-serif", fontSize: "10px", fontWeight: 600, letterSpacing: "0.16em", textTransform: "uppercase", color: `${C.sand}90`, marginTop: 3 }}>AI Travel Companion</span>
               </span>
             </Link>
             <span style={{ width: 1, height: 22, background: `${C.limestone}18`, flexShrink: 0 }} className="hidden md:block" />

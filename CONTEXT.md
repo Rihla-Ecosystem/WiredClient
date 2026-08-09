@@ -9,7 +9,10 @@
 - Chat/voice/identify response types and message objects now carry `usage` / `providerCalls` / `providerAttempts` telemetry (captured from ai-service, rendered on assistant bubbles).
 
 ## In-progress / next
-- PROD LIVE-SITE FIX PUSHED (new commit): middleware no longer 307-redirects `/api/*` → `/en/api/*` (was breaking the `/api/:path*` rewrite → every API call 404: login, `/auth/refresh`, `/geo/notice`). Now `isApi` → `NextResponse.next()` (bypasses next-intl). CSP: added `worker-src 'self' blob:` (silences extension worker block) + `img-src https://*.tile.openstreetmap.org https://unpkg.com` (Leaflet tiles + markers). `connect-src` unchanged. PENDING: redeploy + smoke (login, chat SSE, map/nearby). Notifications inbox + context alerts + telemetry shipped; next: verify SSE live-delivery in a real browser.
+- SWITCHED TO DEPLOYED STACK 2026-08-09: local services + DB containers retired; app runs entirely on deployed infra (VPS 88.222.220.235 + Supabase/Qdrant cloud + Vercel). Vercel is connected to the FORK `ibrahim99035/WiredClient` (not org) — push `main` to BOTH `origin` (Rihla-Ecosystem) AND `fork` to deploy. `next dev` NOT running locally anymore.
+
+## Changelog
+- 2026-08-09: Deployed-stack migration. Committed + pushed client fixes (`1adc3b8`): next-intl `learnMore` namespace fix, `guide.area.generic` → `.body` (INSUFFICIENT_PATH), auth-gated `SensitiveAreaNotice`+`use-area-notice` (no auth'd `/geo/notice` polling when logged out, refetchInterval conditional), removed duplicate footer copyright, bigger logo (head 52px / footer 48px), hieroglyph particle drift (`rihlaDrift1-4` + wide translate arcs; FIXED `animDuration` double-`s` bug that made glyphs static). Verified live on `wired-client.vercel.app` (drift keyframes + 52px logo + no MISSING_MESSAGE). Local `.env.local` still points `localhost:3000` — no longer used; production reachable at `https://wired-client.vercel.app`.
 
 ## Architecture notes
 - Full API layer in `src/lib/api/` (coreClient w/ 401 refresh + queue; geoClient no refresh).

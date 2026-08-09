@@ -25,7 +25,6 @@ async function proxyRequest(
     method: request.method,
     headers,
     body,
-    // duplex: "half" not in standard RequestInit types
   } as RequestInit);
 
   const responseHeaders = new Headers();

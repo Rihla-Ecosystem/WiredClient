@@ -6,7 +6,7 @@ import axios, {
 import { useAuthStore } from "@/lib/stores/auth-store";
 
 export const coreBaseURL =
-  process.env.NEXT_PUBLIC_CORE_API_URL || "http://localhost:3000/api";
+  process.env.NEXT_PUBLIC_CORE_API_URL || "http://localhost:3000/api-proxy";
 
 let refreshPromise: Promise<string | null> | null = null;
 

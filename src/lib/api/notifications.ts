@@ -66,7 +66,9 @@ export interface LocationEngineResult {
 
 export interface LocationUpdateData {
   notifications: GeneratedNotification[];
-  contextReport: ContextReport;
+  /** True when a routine GPS ping was throttled (no AI, no report emitted). */
+  skipped?: boolean;
+  contextReport: ContextReport | null;
 }
 
 export interface UnreadResponse {

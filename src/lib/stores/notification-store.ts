@@ -38,13 +38,45 @@ interface NotificationState {
     }
   ) => Promise<{
     notifications: GeneratedNotification[];
-    contextReport: ContextReport;
+    contextReport: ContextReport | null;
   } | null>;
   applyLive: (notification: InboxNotification) => void;
   reset: () => void;
 }
 
-let streamHandle: { abort: () => void } | null = null;
+/** Shape of an engine-generated notification before it's an inbox row. */
+type NewsNotification = {
+  id?: string;
+  title: string;
+  message: string;
+  type: GeneratedNotification["type"];
+  category: GeneratedNotification["category"];
+  priority: GeneratedNotification["priority"];
+  source: GeneratedNotification["source"];
+  cooldownKey: string;
+  lat?: number;
+  lng?: number;
+  data?: Record<string, unknown>;
+};
+
+function toInboxNotification(n: NewsNotification & { id: string }): InboxNotification {
+  return {
+    id: n.id,
+    type: n.type,
+    category: n.category,
+    priority: n.priority,
+    source: n.source,
+    title: n.title,
+    message: n.message,
+    data: (n.data ?? null) as InboxNotification["data"],
+    lat: n.lat ?? null,
+    lng: n.lng ?? null,
+    isRead: false,
+    readAt: null,
+    deliveredAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+  };
+}
 
 export const useNotificationStore = create<NotificationState>()((set, get) => ({
   unreadCount: 0,
@@ -155,10 +187,22 @@ export const useNotificationStore = create<NotificationState>()((set, get) => ({
       const res = await notificationsApi.reportLocation(payload);
       const data = res.data?.data;
       if (!data) return null;
-      set({
-        activeReport: data.contextReport ?? null,
-        activeNotifications: data.notifications ?? [],
-        unreadCount: get().unreadCount + (data.notifications?.length ?? 0),
+      // The engine returns the notifications it just generated; the same ones
+      // also arrive over the SSE stream. Apply them here (deduped) and let
+      // applyLive skip anything already counted.
+      const incoming = (data.notifications ?? []).filter(
+        (n) => n.id != null
+      ) as Array<NewsNotification & { id: string }>;
+      set((s) => {
+        const known = new Set(s.inbox.map((n) => n.id));
+        const fresh = incoming.filter((n) => !known.has(n.id));
+        const seedInbox = fresh.map((n) => toInboxNotification(n));
+        return {
+          activeReport: data.contextReport ?? null,
+          activeNotifications: data.notifications ?? [],
+          inbox: [...seedInbox, ...s.inbox].slice(0, 200),
+          unreadCount: s.unreadCount + seedInbox.length,
+        };
       });
       return {
         notifications: data.notifications ?? [],
@@ -171,6 +215,9 @@ export const useNotificationStore = create<NotificationState>()((set, get) => ({
 
   applyLive: (notification) => {
     set((s) => {
+      // SSE redelivers notifications already seeded by reportLocation; skip
+      // them so the unread counter is never double-counted.
+      if (s.inbox.some((n) => n.id === notification.id)) return s;
       const next = [notification, ...s.inbox].slice(0, 200);
       return {
         inbox: next,
@@ -193,34 +240,72 @@ export const useNotificationStore = create<NotificationState>()((set, get) => ({
     }),
 }));
 
+let streamHandle: { abort: () => void } | null = null;
+let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+let reconnectAttempts = 0;
+let disposed = false;
+
+const RECONNECT_BASE_MS = 2000;
+const RECONNECT_MAX_MS = 30000;
+
 /** Open (or reuse) the realtime notification SSE stream while authenticated. */
 export function connectNotificationStream(): () => void {
   const auth = useAuthStore.getState();
   if (!auth.accessToken) return () => {};
   if (streamHandle) return () => {};
+  disposed = false;
 
-  const { stream, abort } = notificationsApi.streamNotifications();
-  streamHandle = { abort };
+  const startStream = () => {
+    // Re-check auth on (re)connect; stop retrying once logged out / disposed.
+    if (disposed || !useAuthStore.getState().accessToken) return;
+    const { stream, abort } = notificationsApi.streamNotifications();
+    streamHandle = { abort };
 
-  void (async () => {
-    try {
-      for await (const payload of stream) {
-        const p = payload as Record<string, unknown>;
-        if (p?.type === "notification") {
-          const notification = p.notification as InboxNotification;
-          useNotificationStore.getState().applyLive(notification);
+    void (async () => {
+      try {
+        reconnectAttempts = 0;
+        for await (const payload of stream) {
+          const p = payload as Record<string, unknown>;
+          if (p?.type === "notification") {
+            const notification = p.notification as InboxNotification;
+            useNotificationStore.getState().applyLive(notification);
+          }
         }
+      } catch {
+        // stream failed/aborted — schedule reconnect below
+      } finally {
+        streamHandle = null;
+        useNotificationStore.setState({ isConnected: false });
+        if (!disposed && reconnectTimer == null) scheduleReconnect();
       }
-    } catch {
-      // stream closed/aborted — caller reconnects on demand
-    } finally {
-      streamHandle = null;
-      useNotificationStore.setState({ isConnected: false });
-    }
-  })();
+    })();
 
-  useNotificationStore.setState({ isConnected: true });
+    useNotificationStore.setState({ isConnected: true });
+  };
+
+  const scheduleReconnect = () => {
+    if (reconnectTimer != null) return;
+    const delay = Math.min(
+      RECONNECT_BASE_MS * 2 ** reconnectAttempts,
+      RECONNECT_MAX_MS
+    );
+    reconnectAttempts += 1;
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = null;
+      if (streamHandle) return;
+      startStream();
+    }, delay);
+  };
+
+  startStream();
+
   return () => {
+    disposed = true;
+    if (reconnectTimer != null) {
+      clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    }
+    reconnectAttempts = 0;
     streamHandle?.abort();
     streamHandle = null;
     useNotificationStore.setState({ isConnected: false });

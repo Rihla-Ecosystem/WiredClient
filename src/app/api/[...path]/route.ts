@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+
 const VPS_API_BASE = process.env.NEXT_PUBLIC_CORE_API_URL ?? "http://88.222.220.235:3005";
 
 async function proxyRequest(
   request: NextRequest,
-  { params }: { params: Promise<{ path: string[] }> }
+  context: { params: Promise<{ path: string[] }> }
 ): Promise<NextResponse> {
-  const { path } = await params;
+  const { path } = await context.params;
   const targetUrl = `${VPS_API_BASE}/${path.join("/")}${request.nextUrl.search}`;
 
   const headers: Record<string, string> = {};

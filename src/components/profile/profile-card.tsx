@@ -22,7 +22,7 @@ export function ProfileCard() {
       />
       <div className="relative flex flex-col sm:flex-row items-center sm:items-start gap-6">
         {/* Avatar */}
-        <div className="w-24 h-24 rounded-full bg-[#2E9C93]/12 flex items-center justify-center text-3xl font-serif font-bold text-[#2E9C93] border-2 border-[#2E9C93]/30 flex-shrink-0">
+        <div className="w-24 h-24 rounded-full bg-faience/12 flex items-center justify-center text-3xl font-serif font-bold text-faience border-2 border-faience/30 flex-shrink-0">
           {user.displayName.charAt(0).toUpperCase()}
         </div>
 
@@ -52,12 +52,12 @@ export function ProfileCard() {
 
           <div className="flex items-center gap-4 mt-4 justify-center sm:justify-start">
             <div className="text-center">
-              <div className="text-2xl font-bold text-[#C8831A]">{user.level}</div>
+              <div className="text-2xl font-bold text-gold">{user.level}</div>
               <div className="text-xs text-muted-foreground">{t("level")}</div>
             </div>
             <div className="w-px h-10 bg-sand/50 dark:bg-nile-light/30" />
             <div className="text-center">
-              <div className="text-2xl font-bold text-[#C8831A]">{user.xp}</div>
+              <div className="text-2xl font-bold text-gold">{user.xp}</div>
               <div className="text-xs text-muted-foreground">XP</div>
             </div>
           </div>

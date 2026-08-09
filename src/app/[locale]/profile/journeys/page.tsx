@@ -55,7 +55,7 @@ export default function ProfileJourneysPage() {
               onClick={() => setTab(tabs)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 tab === tabs
-                  ? "bg-[#2E9C93] text-white"
+                  ? "bg-faience text-white"
                   : "bg-white dark:bg-nile text-muted-foreground border border-sand/50 dark:border-nile-light/20 hover:text-nile dark:hover:text-sand"
               }`}
             >

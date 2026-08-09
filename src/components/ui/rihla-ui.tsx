@@ -35,15 +35,33 @@ export function RihlaButton({
     <button
       {...props}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-[10px] px-5 py-2.5 font-body text-sm font-semibold transition-all",
+        "inline-flex items-center justify-center gap-2 rounded-[10px] px-5 py-2.5 font-body text-sm font-semibold transition-all duration-200 cursor-pointer select-none active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none",
         className
       )}
       style={{
         background: s.bg,
         color: s.color,
-        boxShadow: variant === "primary" ? "0 3px 14px rgba(200,131,26,0.35)" : undefined,
-        cursor: "pointer",
+        boxShadow:
+          variant === "primary"
+            ? "0 4px 16px rgba(200,131,26,0.35)"
+            : variant === "ai"
+            ? "0 4px 16px rgba(46,156,147,0.3)"
+            : undefined,
+        transition: "transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, filter 0.2s",
         border: "none",
+        cursor: "pointer",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.filter = "brightness(1.07)";
+        if (variant !== "ghost") {
+          (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
+        }
+        props.onMouseEnter?.(e);
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.filter = "brightness(1)";
+        (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+        props.onMouseLeave?.(e);
       }}
     >
       {children}
@@ -71,8 +89,8 @@ export function WebField({
           border: `1.5px solid ${f ? C.solar : "color-mix(in srgb, var(--border) 70%, transparent)"}`,
           borderRadius: 10,
           padding: "12px 14px",
-          boxShadow: f ? "0 0 0 3px rgba(246,131,26,0.12)" : "none",
-          transition: "all 0.2s",
+          boxShadow: f ? "0 0 0 3px rgba(246,131,26,0.12)" : "0 1px 2px rgba(0,0,0,0.04)",
+          transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)",
         }}
       >
         <input
@@ -121,7 +139,12 @@ export function StatusChip({
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
-      style={{ background: `color-mix(in srgb, ${color} 14%, transparent)`, color, border: `1px solid color-mix(in srgb, ${color} 35%, transparent)` }}
+      style={{
+        background: `linear-gradient(135deg, color-mix(in srgb, ${color} 18%, transparent), color-mix(in srgb, ${color} 8%, transparent))`,
+        color,
+        border: `1px solid color-mix(in srgb, ${color} 32%, transparent)`,
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.25), 0 1px 2px rgba(0,0,0,0.04)`,
+      }}
     >
       {children}
     </span>

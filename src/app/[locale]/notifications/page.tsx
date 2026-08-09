@@ -95,7 +95,7 @@ function NotificationsContent() {
                 onClick={() => setFilter("all")}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   filter === "all"
-                    ? "bg-nile dark:bg-nile-light text-white dark:text-navy"
+                    ? "bg-nile dark:bg-nile-light text-white dark:text-limestone"
                     : "bg-transparent text-muted-foreground hover:text-nile dark:hover:text-sand"
                 }`}
               >
@@ -106,7 +106,7 @@ function NotificationsContent() {
                 onClick={() => setFilter("unread")}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   filter === "unread"
-                    ? "bg-nile dark:bg-nile-light text-white dark:text-navy"
+                    ? "bg-nile dark:bg-nile-light text-white dark:text-limestone"
                     : "bg-transparent text-muted-foreground hover:text-nile dark:hover:text-sand"
                 }`}
               >
@@ -133,7 +133,7 @@ function NotificationsContent() {
             onClick={() => setTab("inbox")}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
               tab === "inbox"
-                ? "bg-nile text-white dark:bg-nile-light dark:text-navy"
+                ? "bg-nile text-white dark:bg-nile-light dark:text-limestone"
                 : "text-muted-foreground hover:bg-sand/30 dark:hover:bg-nile-light/20"
             }`}
           >
@@ -145,7 +145,7 @@ function NotificationsContent() {
             onClick={() => setTab("reports")}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
               tab === "reports"
-                ? "bg-navy text-white dark:bg-nile-light dark:text-navy"
+                ? "bg-nile text-white dark:bg-nile-light dark:text-limestone"
                 : "text-muted-foreground hover:bg-sand/30 dark:hover:bg-nile-light/20"
             }`}
           >

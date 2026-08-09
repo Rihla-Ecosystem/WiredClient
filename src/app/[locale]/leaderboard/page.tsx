@@ -32,7 +32,7 @@ export default function LeaderboardPage() {
   }, []);
 
   const medal = (rank: number) => {
-    if (rank === 1) return "text-[#C8831A]";
+    if (rank === 1) return "text-gold";
     if (rank === 2) return "text-slate-400";
     if (rank === 3) return "text-amber-700";
     return "text-muted-foreground";
@@ -71,12 +71,12 @@ export default function LeaderboardPage() {
                 <span className={`w-8 text-center font-bold text-lg flex-shrink-0 ${medal(rank)}`}>
                   {rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : rank}
                 </span>
-                <div className="w-11 h-11 rounded-full bg-[#2E9C93]/12 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                <div className="w-11 h-11 rounded-full bg-faience/12 flex items-center justify-center flex-shrink-0 overflow-hidden">
                   {entry.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={entry.avatarUrl} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <User className="w-5 h-5 text-[#2E9C93]" />
+                    <User className="w-5 h-5 text-faience" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -88,7 +88,7 @@ export default function LeaderboardPage() {
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="font-bold text-[#C8831A]">{entry.xp.toLocaleString()}</div>
+                  <div className="font-bold text-gold">{entry.xp.toLocaleString()}</div>
                   <div className="text-xs text-muted-foreground">{t("xp")}</div>
                 </div>
               </li>

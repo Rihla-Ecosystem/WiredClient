@@ -30,14 +30,12 @@ export function LoginForm() {
   });
 
   const onSubmit = async (data: LoginInput) => {
-    console.log("Login submit", data.email);
     setError(null);
     try {
       const { data: loginRes } = await authApi.login({
         email: data.email,
         password: data.password,
       });
-      console.log("Login OK", loginRes.accessToken ? "token received" : "no token");
 
       let user: User = loginRes.user as User;
       try {
@@ -59,17 +57,7 @@ export function LoginForm() {
         response?: { data?: { error?: string }; status?: number };
         message?: string;
         code?: string;
-        config?: { url?: string; baseURL?: string };
       };
-      console.error("Login FAILED", {
-        name: err?.constructor?.name,
-        code: err?.code,
-        status: err?.response?.status,
-        error: err?.response?.data?.error,
-        message: err?.message,
-        toString: e?.toString?.(),
-        url: (err?.config?.baseURL ?? "") + (err?.config?.url ?? ""),
-      });
       setError(err?.response?.data?.error || err?.message || "Login failed");
     }
   };
@@ -152,7 +140,6 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        onClick={() => console.log("Login button clicked", isSubmitting)}
         className="w-full py-3 bg-gold hover:bg-gold-dark text-white rounded-lg font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {isSubmitting ? (

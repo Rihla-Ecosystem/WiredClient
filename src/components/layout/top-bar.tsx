@@ -35,8 +35,6 @@ const PARTICLES = [
   { left: "93%", top: "62%", delay: "6.2s", dur: "13s", size: 2 },
 ];
 
-const SUN_ROTATION = Array.from({ length: 12 }, (_, i) => i * 30);
-
 const HIEROGLYPHS = [
   { glyph: "𓋹", left: "3%", top: "22%", delay: "0s", dur: "6s", size: 20 },   // ankh
   { glyph: "𓂀", left: "11%", top: "55%", delay: "1.4s", dur: "7s", size: 22 },  // eye of horus
@@ -70,10 +68,17 @@ export function TopBar() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const initial = (user?.displayName || "Traveler").charAt(0).toUpperCase();
   const pageTitle = pathname.split("/").filter(Boolean)[1] ?? "Home";
-  const prettyTitle = pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
 
   return (
     <>
@@ -84,6 +89,7 @@ export function TopBar() {
         @keyframes rihlaWiggle { 0%,100%{transform:rotate(0)} 20%{transform:rotate(12deg)} 40%{transform:rotate(-10deg)} 60%{transform:rotate(6deg)} 80%{transform:rotate(-4deg)} }
         @keyframes rihlaGlow { 0%,100%{box-shadow:0 0 0 0 rgba(232,168,32,0.45)} 50%{box-shadow:0 0 0 8px rgba(232,168,32,0)} }
         @keyframes rihlaFadeUp { 0%{opacity:0;transform:translateY(10px)} 100%{opacity:1;transform:translateY(0)} }
+        @keyframes rihlaHiero { 0%{transform:translate(0,0) rotate(0deg);opacity:0.95} 25%{transform:translate(6px,-16px) rotate(4deg)} 50%{transform:translate(-4px,-28px) rotate(-3deg)} 75%{transform:translate(8px,-12px) rotate(2deg)} 100%{transform:translate(0,0) rotate(0deg);opacity:0.95} }
       `}</style>
 
       <div
@@ -96,6 +102,8 @@ export function TopBar() {
           position: "sticky",
           top: 0,
           zIndex: 30,
+          transition: "box-shadow 0.3s cubic-bezier(0.22,1,0.36,1)",
+          boxShadow: scrolled ? "0 8px 30px rgba(0,0,0,0.35)" : "0 2px 12px rgba(0,0,0,0.18)",
         }}
       >
         <div
@@ -254,11 +262,21 @@ export function TopBar() {
                     fontFamily: "'Cairo',sans-serif",
                     fontSize: "13px",
                     fontWeight: isActive ? 600 : 400,
-                    color: isActive ? C.solarBright : `${C.limestone}70`,
+                    color: isActive ? C.solarBright : `${C.limestone}78`,
                     padding: "8px 11px",
-                    borderRadius: 9,
-                    background: isActive ? "rgba(245,239,224,0.10)" : "transparent",
+                    borderRadius: 10,
+                    background: isActive
+                      ? "linear-gradient(135deg, rgba(232,168,32,0.18), rgba(232,168,32,0.07))"
+                      : "transparent",
+                    boxShadow: isActive ? "inset 0 0 0 1px rgba(232,168,32,0.25), 0 2px 10px rgba(232,168,32,0.10)" : "none",
+                    transition: "all 0.2s cubic-bezier(0.22,1,0.36,1)",
                     whiteSpace: "nowrap",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(245,239,224,0.07)";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
                   }}
                 >
                   {link.icon}
@@ -306,13 +324,13 @@ export function TopBar() {
                       <Link href="/profile" onClick={() => setUserOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-sand/30 dark:hover:bg-nile-light/20">
                         <User className="w-4 h-4" /> Profile
                       </Link>
-                      <Link href="/wallet" onClick={() => setUserOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-sand/30 hover:bg-sand/30 dark:hover:bg-nile-light/20">
+                      <Link href="/wallet" onClick={() => setUserOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-sand/30 dark:hover:bg-nile-light/20">
                         <Wallet className="w-4 h-4" /> Wallet
                       </Link>
-                      <Link href="/settings" onClick={() => setUserOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-sand/30 hover:bg-sand/30 dark:hover:bg-nile-light/20">
+                      <Link href="/settings" onClick={() => setUserOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-sand/30 dark:hover:bg-nile-light/20">
                         <Settings className="w-4 h-4" /> Settings
                       </Link>
-                      <Link href="/quests" onClick={() => setUserOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-sand/30 hover:bg-sand/30 dark:hover:bg-nile-light/20">
+                      <Link href="/quests" onClick={() => setUserOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-sand/30 dark:hover:bg-nile-light/20">
                         <Compass className="w-4 h-4" /> Quests
                       </Link>
                       <hr className="my-1 border-primary-200/20" />
@@ -352,7 +370,7 @@ export function TopBar() {
         <div className="md:hidden glass border-b border-primary-200/20" style={{ position: "relative", zIndex: 29 }}>
           <div className="px-4 py-3 space-y-1">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-sand/30 hover:bg-sand/30 dark:hover:bg-nile-light/20">
+              <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-sand/30 dark:hover:bg-nile-light/20">
                 <span className="text-current">{link.icon}</span>
                 {link.label}
               </Link>

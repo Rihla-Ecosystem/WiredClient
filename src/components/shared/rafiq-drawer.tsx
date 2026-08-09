@@ -24,16 +24,18 @@ export interface RafiqDrawerProps {
 
 export function RafiqDrawer({ open, onClose, suggestions = [] }: RafiqDrawerProps) {
   const t = useTranslations("chat");
-  const {
-    currentConversationId,
-    messages,
-    isStreaming,
-  } = useChatStore();
+  const { currentConversationId, messages, isStreaming, sendMessage } =
+    useChatStore();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const curMessages = currentConversationId
     ? messages[currentConversationId] ?? []
     : [];
+
+  const askSuggestion = (text: string) => {
+    if (isStreaming || !text.trim()) return;
+    void sendMessage(text.trim(), undefined);
+  };
 
   useEffect(() => {
     if (open) {
@@ -50,7 +52,6 @@ export function RafiqDrawer({ open, onClose, suggestions = [] }: RafiqDrawerProp
     if (open && scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curMessages.length, open]);
 
   if (!open) return null;
@@ -133,9 +134,14 @@ export function RafiqDrawer({ open, onClose, suggestions = [] }: RafiqDrawerProp
               {suggestions.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2 justify-center">
                   {suggestions.map((s, i) => (
-                    <span key={i} className="px-3 py-1.5 rounded-full text-xs font-medium border border-faience/30 text-faience">
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => askSuggestion(s)}
+                      className="px-3 py-1.5 rounded-full text-xs font-medium border border-faience/30 text-faience hover:bg-faience hover:text-white hover:border-faience transition-all duration-200 cursor-pointer"
+                    >
                       {s}
-                    </span>
+                    </button>
                   ))}
                 </div>
               )}

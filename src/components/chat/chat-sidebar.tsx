@@ -36,7 +36,7 @@ export function ChatSidebar({ onClose }: { onClose?: () => void }) {
             router.push("/chat");
             onClose?.();
           }}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#2E9C93] hover:bg-[#27867f] text-white rounded-lg font-medium transition-colors text-sm"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-faience hover:bg-faience-dark text-white rounded-lg font-medium transition-colors text-sm"
         >
           <Plus className="w-4 h-4" />
           {t("newConversation")}
@@ -71,7 +71,7 @@ export function ChatSidebar({ onClose }: { onClose?: () => void }) {
             }}
             className={`w-full text-left p-3 rounded-lg transition-all text-sm group cursor-pointer ${
               activeConversationId === conv.id
-                ? "bg-[#2E9C93]/10 text-[#2E9C93] border border-[#2E9C93]/25"
+                ? "bg-faience/10 text-faience border border-faience/25"
                 : "text-muted-foreground hover:bg-sand/30 dark:hover:bg-nile-light/20 hover:text-nile dark:hover:text-sand"
             }`}
           >

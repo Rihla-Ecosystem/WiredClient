@@ -1,4 +1,4 @@
-import { Inbox } from "lucide-react";
+import { Inbox, MessageSquare, MapPin, Coins, Banknote } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 interface EmptyStateProps {
@@ -9,6 +9,13 @@ interface EmptyStateProps {
   className?: string;
 }
 
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  messagesquare: MessageSquare,
+  mappin: MapPin,
+  coins: Coins,
+  banknote: Banknote,
+};
+
 export function EmptyState({
   icon,
   title,
@@ -16,6 +23,9 @@ export function EmptyState({
   action,
   className,
 }: EmptyStateProps) {
+  const resolvedIcon =
+    typeof icon === "string" ? ICON_MAP[icon.toLowerCase()] : undefined;
+  const FallbackIcon = resolvedIcon ?? Inbox;
   return (
     <div
       className={cn(
@@ -23,16 +33,18 @@ export function EmptyState({
         className
       )}
     >
-      <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-        {icon || <Inbox className="w-6 h-6 text-gray-400" />}
+      <div className="w-12 h-12 rounded-full bg-sand/30 dark:bg-nile-light/30 flex items-center justify-center">
+        {typeof icon === "string" ? (
+          <FallbackIcon className="w-6 h-6 text-muted-foreground" />
+        ) : (
+          icon || <Inbox className="w-6 h-6 text-muted-foreground" />
+        )}
       </div>
-      <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+      <h3 className="text-sm font-medium text-fg-foreground dark:text-foreground">
         {title}
       </h3>
       {description && (
-        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm">
-          {description}
-        </p>
+        <p className="text-sm text-muted-foreground max-w-sm">{description}</p>
       )}
       {action}
     </div>

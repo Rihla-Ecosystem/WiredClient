@@ -29,7 +29,7 @@ export function SensitiveAreaNotice() {
   const classes: Record<string, { bar: string; chip: string }> = {
     critical: { bar: "bg-red-600", chip: "bg-red-700" },
     warning: { bar: "bg-amber-500", chip: "bg-amber-600" },
-    info: { bar: "bg-sky-500", chip: "bg-sky-600" },
+    info: { bar: "bg-faience", chip: "bg-faience-dark" },
   };
   const pal = classes[notice.severity ?? "warning"] ?? classes.warning;
 

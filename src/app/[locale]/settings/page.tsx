@@ -17,7 +17,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
         width: 44,
         height: 24,
         borderRadius: 99,
-        background: on ? "var(--color-faience, #2E9C93)" : "#D4CBB8",
+        background: on ? "var(--color-faience, #2E9C93)" : "var(--border)",
         border: "none",
         cursor: "pointer",
         position: "relative",

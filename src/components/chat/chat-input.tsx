@@ -206,7 +206,7 @@ export function ChatInput() {
                   className={`flex flex-col items-center gap-1 p-2 rounded-lg text-xs transition-all ${
                     (p.value === "auto" && !activePersona) ||
                     activePersona === p.value
-                      ? "bg-[#2E9C93]/15 text-[#2E9C93]"
+                      ? "bg-faience/15 text-faience"
                       : "text-muted-foreground hover:bg-sand/30 dark:hover:bg-nile-light/20"
                   }`}
                 >
@@ -302,7 +302,7 @@ export function ChatInput() {
           type="button"
           onClick={handleSend}
           disabled={!input.trim() || isStreaming}
-          className="p-2.5 rounded-xl bg-[#C8831A] hover:bg-[#a96f14] text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="p-2.5 rounded-xl bg-gold hover:bg-gold-dark text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           style={{ boxShadow: "0 3px 12px rgba(200,131,26,0.35)" }}
         >
           <Send className="w-5 h-5" />

@@ -24,7 +24,6 @@ export default function ChatDetailPage() {
   const {
     conversations,
     messages,
-    currentConversationId,
     setActiveConversation,
     error: chatError,
     setError,

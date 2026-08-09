@@ -12,7 +12,7 @@ const intlMiddleware = createMiddleware({
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isApi = pathname.includes("/api/");
+  const isApi = pathname.includes("/api/") || pathname.startsWith("/api-proxy/");
 
   if (isApi) {
     return NextResponse.next();

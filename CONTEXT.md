@@ -1,7 +1,7 @@
 # rihla-client — Handoff
 
 > Read relevant section only. Appends 3–6 lines. Prune Changelog > 25.
-> Last updated: 2026-08-08
+> Last updated: 2026-08-10
 
 ## Current status
 - Client running on **3100** (`next start`, setsid) with built output; `.env.local` points Core 3000 / Geo 8000.
@@ -10,8 +10,10 @@
 
 ## In-progress / next
 - SWITCHED TO DEPLOYED STACK 2026-08-09: local services + DB containers retired; app runs entirely on deployed infra (VPS 88.222.220.235 + Supabase/Qdrant cloud + Vercel). Vercel is connected to the FORK `ibrahim99035/WiredClient` (not org) — push `main` to BOTH `origin` (Rihla-Ecosystem) AND `fork` to deploy. `next dev` NOT running locally anymore.
+- 2026-08-10 ASSESSMENT FIX LIVE: same-origin proxy `/api/v1/[...path]` maps `/api/v1/<path>` → `http://88.222.220.235:3005/api/<path>` (auth headers preserved; VPS is HTTP-only so browser→Vercel proxy→VPS). `coreBaseURL` default `/api/v1`. `streamMessage` now POSTs NON-stream `/chat` (SSE disabled server-side; avoids Vercel function timeout + stale ai image). New signups auto-verify via core `AUTO_VERIFY_EMAIL=true` (pushed core `23ca3b9`, deployed on VPS). Verified live all green.
 
 ## Changelog
+- 2026-08-10: PROD ASSESSMENT FIXES. `1c4c1e9`: `streamMessage` → non-stream `/chat` (single chunk; kills SSE dependency + Vercel 10s). `b930ced`: proxy adds `/api` prefix + `coreBaseURL` default `/api/v1`; removed stale empty `pages/` (broke build). Verified live: register 201 → login 200 → /users/me 200 → chat 200 (real AI reply ~3s).
 - 2026-08-09: Deployed-stack migration. Committed + pushed client fixes (`1adc3b8`): next-intl `learnMore` namespace fix, `guide.area.generic` → `.body` (INSUFFICIENT_PATH), auth-gated `SensitiveAreaNotice`+`use-area-notice` (no auth'd `/geo/notice` polling when logged out, refetchInterval conditional), removed duplicate footer copyright, bigger logo (head 52px / footer 48px), hieroglyph particle drift (`rihlaDrift1-4` + wide translate arcs; FIXED `animDuration` double-`s` bug that made glyphs static). Verified live on `wired-client.vercel.app` (drift keyframes + 52px logo + no MISSING_MESSAGE). Local `.env.local` still points `localhost:3000` — no longer used; production reachable at `https://wired-client.vercel.app`.
 
 ## Architecture notes

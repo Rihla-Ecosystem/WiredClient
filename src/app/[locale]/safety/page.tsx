@@ -99,7 +99,7 @@ function SafetyContent() {
     const seen = new Set<string>();
     const out: SafetyEvent[] = [];
     for (const e of source) {
-      const key = e.id || `${e.type}|${(e.location || "").toLowerCase()}|${e.title.toLowerCase()}`;
+      const key = e.id || `${e.type}|${(e.location || "").toLowerCase()}|${(e.title || "").toLowerCase()}`;
       if (seen.has(key)) continue;
       const location = e.location
         ? (CITY_DISPLAY[e.location.toLowerCase().replace(/[\s.-]+/g, "_")] ?? e.location)

@@ -8,6 +8,12 @@ export interface SafetyEvent {
   source: string;
   timestamp: string;
   location?: string;
+
+  severity?: string;
+  headline?: string;
+  effectiveTime?: string;
+  rawRef?: string;
+  category?: string;
 }
 
 export interface StaticNote {

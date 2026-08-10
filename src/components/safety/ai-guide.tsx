@@ -29,8 +29,27 @@ const SEVERITY_RANK: Record<string, number> = {
   info: 3,
 };
 
+function normalizeSeverity(severity?: string): "advisory" | "warning" | "critical" | "info" {
+  switch ((severity || "info").toLowerCase()) {
+    case "critical":
+    case "high":
+      return "critical";
+    case "warning":
+      return "warning";
+    case "advisory":
+      return "advisory";
+    default:
+      return "info";
+  }
+}
+
 function buildPrompt(city: string, risk: CityRisk, nationality: string | null) {
   const topEvents = [...risk.events]
+    .map((e) => ({
+      type: e.type ?? normalizeSeverity(e.severity),
+      title: e.title ?? e.headline ?? "",
+      description: e.description ?? e.category ?? e.headline ?? "",
+    }))
     .sort(
       (a, b) =>
         (SEVERITY_RANK[a.type] ?? 4) - (SEVERITY_RANK[b.type] ?? 4)

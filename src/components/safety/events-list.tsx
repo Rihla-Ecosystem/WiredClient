@@ -59,7 +59,7 @@ export function EventsList({ events }: EventsListProps) {
   return (
     <div className="space-y-3">
       {events.map((event, index) => {
-        const cfg = EVENT_CONFIG[event.type];
+        const cfg = EVENT_CONFIG[event.type] ?? EVENT_CONFIG.info;
         const Icon = cfg.icon;
         return (
           <div

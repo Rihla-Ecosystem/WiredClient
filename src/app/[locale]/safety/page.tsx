@@ -41,6 +41,20 @@ const CITY_DISPLAY: Record<string, string> = Object.fromEntries(
   ])
 );
 
+function normalizeSeverity(severity?: string): SafetyEvent["type"] {
+  switch ((severity || "info").toLowerCase()) {
+    case "critical":
+    case "high":
+      return "critical";
+    case "warning":
+      return "warning";
+    case "advisory":
+      return "advisory";
+    default:
+      return "info";
+  }
+}
+
 export default function SafetyPage() {
   return (
     <Suspense fallback={null}>
@@ -99,13 +113,26 @@ function SafetyContent() {
     const seen = new Set<string>();
     const out: SafetyEvent[] = [];
     for (const e of source) {
-      const key = e.id || `${e.type}|${(e.location || "").toLowerCase()}|${(e.title || "").toLowerCase()}`;
+      const type = (e.type ?? normalizeSeverity(e.severity)) as SafetyEvent["type"];
+      const title = e.title ?? e.headline ?? "";
+      const timestamp = e.timestamp ?? e.effectiveTime ?? "";
+      const id = e.id ?? e.rawRef ?? `${type}|${title}`;
+      const key = id;
       if (seen.has(key)) continue;
+      const display = title || id;
       const location = e.location
         ? (CITY_DISPLAY[e.location.toLowerCase().replace(/[\s.-]+/g, "_")] ?? e.location)
         : undefined;
       seen.add(key);
-      out.push({ ...e, location });
+      out.push({
+        id,
+        type,
+        title: display,
+        description: e.description ?? e.category ?? e.headline ?? "",
+        source: e.source ?? "Rihla",
+        timestamp,
+        location,
+      });
     }
     return out;
   }, [risk]);

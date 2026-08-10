@@ -162,7 +162,7 @@ export const chatApi = {
     }
   ): Promise<StreamResult> => {
     const token = useAuthStore.getState().accessToken;
-    const response = await fetch(`${CORE_API_URL}/chat/stream`, {
+    const response = await fetch(`${CORE_API_URL}/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -179,75 +179,35 @@ export const chatApi = {
     });
 
     if (!response.ok) {
-      throw new Error(`Chat stream failed: ${response.status}`);
+      throw new Error(`Chat failed: ${response.status}`);
     }
 
-    const reader = response.body!.getReader();
-    const decoder = new TextDecoder();
-    let fullReply = "";
-    let buffer = "";
-    let conversationId = context?.conversationId || "";
-    let finalUsage: UsageResult | null = null;
-    let finalModel: string | null = null;
-    let finalCalls: ProviderCall[] = [];
-    let finalAttempts: ProviderAttempt[] = [];
+    const payload = (await response.json()) as Partial<ChatResult> &
+      Record<string, unknown>;
 
-    const handleEvent = (payload: Record<string, unknown>) => {
-      if (payload.error) {
-        throw new Error(String(payload.reason || payload.error));
-      }
-      if (typeof payload.token === "string") {
-        fullReply += payload.token;
-        onToken?.(payload.token);
-      }
-      if (payload.done && typeof payload.full_response === "string") {
-        fullReply = payload.full_response;
-      }
-      if (typeof payload.conversation_id === "string") {
-        conversationId = payload.conversation_id;
-      }
-      if (payload.usage && typeof payload.usage === "object") {
-        finalUsage = payload.usage as UsageResult;
-      }
-      if (typeof payload.model === "string") {
-        finalModel = payload.model;
-      }
-      if (Array.isArray(payload.providerCalls)) {
-        finalCalls = payload.providerCalls as ProviderCall[];
-      }
-      if (Array.isArray(payload.providerAttempts)) {
-        finalAttempts = payload.providerAttempts as ProviderAttempt[];
-      }
-    };
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() || "";
-
-      for (const line of lines) {
-        if (line.startsWith("data: ")) {
-          const raw = line.slice(6).trim();
-          if (raw === "[DONE]") continue;
-          try {
-            handleEvent(JSON.parse(raw));
-          } catch (e) {
-            if (e instanceof Error && !(e instanceof SyntaxError)) throw e;
-          }
-        }
-      }
+    if (payload && typeof payload === "object" && "error" in payload) {
+      throw new Error(String(payload.error));
     }
+
+    const fullReply = typeof payload.response === "string" ? payload.response : "";
+    if (fullReply) {
+      onToken?.(fullReply);
+    }
+
+    const conversationId =
+      typeof payload.conversation_id === "string"
+        ? payload.conversation_id
+        : context?.conversationId || "";
 
     return {
       text: fullReply,
       conversationId,
-      usage: finalUsage,
-      model: finalModel,
-      providerCalls: finalCalls,
-      providerAttempts: finalAttempts,
+      usage: (payload.usage as UsageResult | null | undefined) ?? null,
+      model: (payload.model as string | null | undefined) ?? null,
+      providerCalls:
+        (payload.providerCalls as ProviderCall[] | null | undefined) ?? [],
+      providerAttempts:
+        (payload.providerAttempts as ProviderAttempt[] | null | undefined) ?? [],
     };
   },
 
